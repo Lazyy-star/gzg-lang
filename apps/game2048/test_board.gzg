@@ -1,0 +1,169 @@
+# test_board.gzg —— board.gzg 的单元测试
+# 运行：gzg apps/game2048/test_board.gzg
+
+import "board.gzg"
+
+let passed = 0
+
+fn check(name, actual, expected) {
+    assert_eq(actual, expected, name)
+    passed += 1
+}
+
+# ---------- slide_row：单行向左合并 ----------
+fn test_slide_row() {
+    check("2222", slide_row([2, 2, 2, 2]), [[4, 4, 0, 0], 8])
+    check("2240", slide_row([2, 2, 4, 0]), [[4, 4, 0, 0], 4])
+    check("一步内不连锁合并 4220", slide_row([4, 2, 2, 0]), [[4, 4, 0, 0], 4])
+    check("0202", slide_row([0, 2, 0, 2]), [[4, 0, 0, 0], 4])
+    check("2020 中间有空", slide_row([2, 0, 2, 0]), [[4, 0, 0, 0], 4])
+    check("222 三个相同只合并前两个", slide_row([2, 2, 2, 0]), [[4, 2, 0, 0], 4])
+    check("4422", slide_row([4, 4, 2, 2]), [[8, 4, 0, 0], 12])
+    check("不相等不合并", slide_row([2, 4, 8, 16]), [[2, 4, 8, 16], 0])
+    check("全空", slide_row([0, 0, 0, 0]), [[0, 0, 0, 0], 0])
+    check("只推挤", slide_row([0, 0, 0, 8]), [[8, 0, 0, 0], 0])
+    check("1024 合成 2048", slide_row([1024, 1024, 0, 0]), [[2048, 0, 0, 0], 2048])
+}
+
+# ---------- move_cells：四个方向 ----------
+fn test_move_directions() {
+    let b = from_rows([
+        [2, 2, 0, 0],
+        [0, 4, 0, 4],
+        [2, 0, 0, 0],
+        [2, 0, 2, 8],
+    ])
+    let [left, sl, cl] = move_cells(b, "left")
+    check("左移棋盘", to_rows(left), [[4, 0, 0, 0], [8, 0, 0, 0], [2, 0, 0, 0], [4, 8, 0, 0]])
+    check("左移得分", sl, 16)
+    check("左移有变化", cl, true)
+
+    let [right, sr, cr] = move_cells(b, "right")
+    check("右移棋盘", to_rows(right), [[0, 0, 0, 4], [0, 0, 0, 8], [0, 0, 0, 2], [0, 0, 4, 8]])
+    check("右移得分", sr, 16)
+
+    let [up, su, cu] = move_cells(b, "up")
+    check("上移棋盘", to_rows(up), [[4, 2, 2, 4], [2, 4, 0, 8], [0, 0, 0, 0], [0, 0, 0, 0]])
+    check("上移得分", su, 4)
+
+    let [down, sd, cd] = move_cells(b, "down")
+    check("下移棋盘", to_rows(down), [[0, 0, 0, 0], [0, 0, 0, 0], [2, 2, 0, 4], [4, 4, 2, 8]])
+    check("下移得分", sd, 4)
+
+    check("move_cells 不修改输入", to_rows(b), [[2, 2, 0, 0], [0, 4, 0, 4], [2, 0, 0, 0], [2, 0, 2, 8]])
+}
+
+# ---------- 不能移动时棋盘不变 ----------
+fn test_no_change() {
+    let b = from_rows([
+        [2, 4, 8, 16],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+    ])
+    let [after, s, changed] = move_cells(b, "left")
+    check("左移无变化：棋盘", after, b)
+    check("左移无变化：得分", s, 0)
+    check("左移无变化：标志", changed, false)
+    let [after_up, s2, changed_up] = move_cells(b, "up")
+    check("上移无变化：标志", changed_up, false)
+
+    # Game.step 在无变化时不生成新块、不记历史
+    let g = Game()
+    g.cells = copy(b)
+    check("Game.step 无效移动返回 false", g.step("left"), false)
+    check("Game.step 无效移动棋盘不变", g.cells, b)
+    check("Game.step 无效移动不计步", g.moves, 0)
+    check("Game.step 无效移动不入历史", g.can_undo(), false)
+}
+
+# ---------- 判负 / 判胜 ----------
+fn test_lose_and_win() {
+    let dead = from_rows([
+        [2, 4, 2, 4],
+        [4, 2, 4, 2],
+        [2, 4, 2, 4],
+        [4, 2, 4, 2],
+    ])
+    check("棋盘满且无相邻相等：判负", is_lost(dead), true)
+    check("死局四个方向都动不了", DIRS.all(fn(d) => not move_cells(dead, d)[2]), true)
+
+    let full_but_alive = from_rows([
+        [2, 4, 2, 4],
+        [4, 2, 4, 2],
+        [2, 4, 2, 4],
+        [4, 2, 4, 4],
+    ])
+    check("满但横向可合并：未输", is_lost(full_but_alive), false)
+
+    let vertical = from_rows([
+        [2, 4, 2, 4],
+        [4, 2, 4, 2],
+        [2, 4, 2, 8],
+        [4, 2, 4, 8],
+    ])
+    check("满但纵向可合并：未输", is_lost(vertical), false)
+    check("有空格：未输", is_lost([0] * 16), false)
+
+    let w = from_rows([[2048, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
+    check("有 2048：胜利", has_won(w), true)
+    check("没有 2048：未胜", has_won(dead), false)
+}
+
+# ---------- 生成新块 ----------
+fn test_spawn() {
+    seed(7)
+    let twos = 0
+    let fours = 0
+    for i in 0..2000 {
+        let c = [0] * 16
+        let idx = spawn_tile(c)
+        assert(idx >= 0 and idx < 16, "下标在范围内")
+        if c[idx] == 2 { twos += 1 } else { fours += 1 }
+    }
+    passed += 1
+    # 90%/10%：2000 次里 4 的数量应在 10% 附近
+    check("生成 4 的比例约 10%", fours > 120 and fours < 280, true)
+
+    let full = from_rows([[2, 4, 2, 4], [4, 2, 4, 2], [2, 4, 2, 4], [4, 2, 4, 2]])
+    check("满棋盘不生成", spawn_tile(full), -1)
+
+    let one = from_rows([[2, 4, 2, 4], [4, 2, 4, 2], [2, 4, 0, 4], [4, 2, 4, 2]])
+    check("唯一空格必被填上", spawn_tile(one), 10)
+}
+
+# ---------- 撤销 ----------
+fn test_undo() {
+    seed(11)
+    let g = Game()
+    g.reset()
+    check("开局两个块", len(empty_indices(g.cells)), 14)
+    let states = [copy(g.cells)]
+    let scores = [g.score]
+    for d in ["left", "up", "right", "down", "left", "up"] {
+        if g.step(d) {
+            states.push(copy(g.cells))
+            scores.push(g.score)
+        }
+    }
+    let n = len(states)
+    check("有若干步成功", n > 3, true)
+    # 多步撤销：一步步回到开局
+    let k = n - 2
+    while k >= 0 {
+        check("撤销恢复棋盘", g.undo(), true)
+        check("撤销后棋盘", g.cells, states[k])
+        check("撤销后分数", g.score, scores[k])
+        k -= 1
+    }
+    check("回到开局后不能再撤销", g.undo(), false)
+    check("步数归零", g.moves, 0)
+}
+
+test_slide_row()
+test_move_directions()
+test_no_change()
+test_lose_and_win()
+test_spawn()
+test_undo()
+print("共 {passed} 项断言，全部测试通过")
