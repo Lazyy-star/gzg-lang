@@ -47,7 +47,7 @@ coverage:
 	build/cov/gzg tests/run_tests.gzg --gzg build/cov/gzg
 	@cd build/cov && for f in ../../src/*.c; do printf "%-14s " $$(basename $$f); gcov -n -o . $$f | grep -m1 "Lines executed"; done
 	@cd build/cov && for f in ../../src/*.c; do gcov -n -o . $$f | grep -m1 "Lines executed"; done | \
-		awk -F'[:% ]+' '{ hit += $$3 * $$5 / 100; all += $$5 } END { printf "合计           Lines executed:%.2f%% of %d\n", hit * 100 / all, all }'
+		awk -F'[:% ]+' '{ hit += $$3 * $$5 / 100; all += $$5 } END { printf "TOTAL          Lines executed:%.2f%% of %d\n", hit * 100 / all, all }'
 
 clean:
 	rm -rf build

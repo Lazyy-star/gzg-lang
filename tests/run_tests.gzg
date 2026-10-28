@@ -13,6 +13,7 @@
     # expect-compile-error: 缺少 ')'          stderr 中应包含的文字，且退出码为 65
     # expect-exit: 3                          显式指定退出码
     同名的 .in 文件会作为标准输入；文件名以 _ 开头的是辅助模块，不单独运行。
+    每个测试运行时 args()[0] 是被测解释器的路径（tests/cli 用它测试命令行选项）。
 ]#
 
 let argv = args()
@@ -86,7 +87,8 @@ let stderr_file = "build/test_stderr_{int(time() * 1000) % 100000000}_{int(clock
 
 fn run_one(path) {
     let e = parse_expect(read_file(path))
-    let cmd = "\"{native_path(interpreter)}\" \"{path}\""
+    # 被测解释器的路径作为脚本参数传入，tests/cli 下的用例用 args()[0] 调用它
+    let cmd = "\"{native_path(interpreter)}\" \"{path}\" \"{native_path(interpreter)}\""
     let input_file = path.slice(0, len(path) - 4) + ".in"
     if file_exists(input_file) { cmd += " < \"{input_file}\"" }
     cmd += " 2> \"{stderr_file}\""

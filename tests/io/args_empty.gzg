@@ -1,2 +1,6 @@
-# 运行器不传额外参数，args() 为空数组
-print(args(), type(args()), len(args()))   # expect: [] array 0
+# 运行器只传入一个参数：被测解释器的路径；用 -e 运行时不带额外参数 args() 为空
+let a = args()
+print(type(a), len(a))   # expect: array 1
+print(a[0].contains("gzg"))   # expect: true
+print(run("\"{a[0]}\" -e \"print(len(args()))\"").output.trim())   # expect: 0
+print(run("\"{a[0]}\" -e \"print(args())\" x 你好").output.trim())   # expect: ["x", "你好"]

@@ -1,0 +1,10 @@
+# --version / --help / 未知选项
+let gzg = args()[0]
+let v = run("\"{gzg}\" --version")
+print(v.code, v.output.trim())   # expect: 0 GZG 1.0.0
+let h = run("\"{gzg}\" --help")
+print(h.code, h.output.contains("用法"), h.output.contains("--dis"))   # expect: 0 true true
+let bad = run("\"{gzg}\" --nope")
+print(bad.code, bad.output.contains("未知选项"))   # expect: 64 true
+let missing = run("\"{gzg}\" no_such_file.gzg")
+print(missing.code, missing.output.contains("无法打开文件"))   # expect: 74 true

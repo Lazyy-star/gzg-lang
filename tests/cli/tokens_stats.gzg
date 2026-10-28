@@ -1,0 +1,14 @@
+# --tokens 打印记号；--stats 在 stderr 打印统计
+let gzg = args()[0]
+let src = "build/cli_tok_tmp.gzg"
+write_file(src, 'let x = 1.5 # c
+print("a{x}b", x ..= 2)
+')
+let t = run("\"{gzg}\" --tokens {src}")
+print(t.code, t.output.contains("let"), t.output.contains("浮点数"), t.output.contains("换行"), t.output.contains("文件结尾"))   # expect: 0 true true true true
+let s = run("\"{gzg}\" --stats no_such_file.gzg")
+print(s.code)   # expect: 74
+let s2 = run("\"{gzg}\" --stats {src}")
+print(s2.output.contains("[统计]"), s2.output.contains("GC"))   # expect: true true
+run(platform() == "windows" ? 'del build\cli_tok_tmp.gzg' : "rm -f build/cli_tok_tmp.gzg")
+print(file_exists(src))   # expect: false

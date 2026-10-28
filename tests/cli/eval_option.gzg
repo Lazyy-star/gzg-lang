@@ -1,0 +1,10 @@
+# -e 直接运行代码，以及退出码
+let gzg = args()[0]
+let r = run("\"{gzg}\" -e \"print(6 * 7)\"")
+print(r.code, r.output.trim())   # expect: 0 42
+let ce = run("\"{gzg}\" -e \"print(1 +)\"")
+print(ce.code, ce.output.contains("语法错误"))   # expect: 65 true
+let re = run("\"{gzg}\" -e \"print([][0])\"")
+print(re.code, re.output.contains("越界"))   # expect: 70 true
+let ex = run("\"{gzg}\" -e \"exit(7)\"")
+print(ex.code)   # expect: 7

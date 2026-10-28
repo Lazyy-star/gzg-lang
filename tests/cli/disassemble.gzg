@@ -1,0 +1,29 @@
+# --dis 反汇编：覆盖各类指令的打印
+let gzg = args()[0]
+let src = "build/cli_dis_tmp.gzg"
+write_file(src, 'struct P { x, y = 0
+    fn len() => self.x + self.y }
+fn f(a, b = 2) { try { return a.len() } catch e { throw e } }
+let m = {k: [1, 2][0:1]}
+for i in 0..3 step 1 { continue }
+for k, v in m { break }
+match 3 { 1..=2 => print(1), n if n > 2 => print(n), _ => {} }
+let g = fn(x) => x |> f
+fn outer() { let c = 0; return fn() => c + 1 }
+let o = P(1)
+print("a{1}b", f(P(1), b: 3), o.len(b: 1), 1 in [1], -1 ** 2, ~1 & 3 | 4 ^ 5 << 1 >> 1)
+import "_nothing.gzg"
+')
+let r = run("\"{gzg}\" --dis {src}")
+let out = r.output
+print(r.code)   # expect: 0
+let missing = []
+for op in ["CLOSURE", "STRUCT", "METHOD", "TRY", "THROW", "FOR_PREP", "FOR_RANGE", "FOR_STEP", "FOR_ITER",
+           "IN_RANGE", "CALL_KW", "INVOKE", "INVOKE_KW", "SLICE", "MAP", "BUILD_STRING", "JUMP_IF_NOT_UNDEF",
+           "IMPORT", "SWAP", "LOOP", "GET_UPVALUE", "BNOT"] {
+    if not out.contains(op) { missing.push(op) }
+}
+print(missing)   # expect: []
+print(out.contains("== <主程序> =="), out.contains("== f =="), out.contains("== len =="))   # expect: true true true
+run(platform() == "windows" ? 'del build\cli_dis_tmp.gzg' : "rm -f build/cli_dis_tmp.gzg")
+print(file_exists(src))   # expect: false

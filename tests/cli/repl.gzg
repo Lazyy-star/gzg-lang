@@ -1,0 +1,31 @@
+# REPL：表达式自动显示、多行输入、错误后继续、.exit
+let gzg = args()[0]
+let input_file = "build/cli_repl_tmp.txt"
+let lines = [
+    "1 + 2",
+    "let a = [1, 2]",
+    "a",
+    "fn f(x) \{",          # 未闭合的 { 让 REPL 继续读下一行
+    "  return x * 10",
+    "\}",
+    "f(4)",
+    "print(undefined_thing)",
+    "\"之后还能用\"",
+    "nil",
+    ".exit",
+    "print(\"不会执行\")",
+]
+write_file(input_file, lines.join("\n") + "\n")
+let r = run("\"{gzg}\" < {input_file}")
+let out = r.output
+print(r.code)   # expect: 0
+print(out.contains("交互式环境"))   # expect: true
+print(out.contains("gzg> 3"), out.contains("[1, 2]"), out.contains("40"))   # expect: true true true
+print(out.contains("...> "))   # expect: true
+print(out.contains("未定义"), out.contains("之后还能用"))   # expect: true true
+print(out.contains("不会执行"))   # expect: false
+write_file(input_file, "let b = 5\n")
+let eof = run("\"{gzg}\" < {input_file}")
+print(eof.code)   # expect: 0
+run(platform() == "windows" ? 'del build\cli_repl_tmp.txt' : "rm -f build/cli_repl_tmp.txt")
+print(file_exists(input_file))   # expect: false
