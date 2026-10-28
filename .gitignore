@@ -1,0 +1,7 @@
+build/
+*.gcda
+*.gcno
+*.gcov
+__pycache__/
+.venv/
+bench/results/*.tmp
