@@ -1,6 +1,6 @@
 # GZG 语言
 
-GZG（取自作者姓名拼音首字母）是一门解释执行的通用脚本语言：**中英双语关键字**、**换行即语句结束**、**字符串插值**、**match 模式匹配**、**管道运算符**、**命名/默认参数**、**严格结构体**，以及带拼写建议的中文错误信息。解释器用 C99 实现（约 7900 行，字节码虚拟机 + 标记清除 GC），9 个基准测试几何平均比 CPython 3.12 快 1.44 倍；327 个黑盒测试、行覆盖率 94%；一个只读过 Skill 文档的 Agent 用它写出了 925 行的 2048 + Expectimax AI（6 个种子全部达成 2048）。
+GZG（取自作者姓名拼音首字母）是一门解释执行的通用脚本语言：**中英双语关键字**、**换行即语句结束**、**字符串插值**、**match 模式匹配**、**管道运算符**、**命名/默认参数**、**严格结构体**，以及带拼写建议的中文错误信息。解释器用 C99 实现（约 7900 行，字节码虚拟机 + 标记清除 GC），9 个基准测试几何平均比 CPython 3.12 快 1.41 倍；327 个黑盒测试、行覆盖率 94%；一个只读过 Skill 文档的 Agent 用它写出了 925 行的 2048 + Expectimax AI（6 个种子全部达成 2048）。
 
 ```gzg
 struct Student {
@@ -27,7 +27,7 @@ make                                 # Windows: mingw32-make，生成 build/gzg.
 build/gzg examples/hello.gzg         # 运行脚本
 build/gzg                            # 交互式环境
 build/gzg tests/run_tests.gzg        # 运行全部测试（一个命令）
-python bench/run_bench.py            # 与 Python 的性能对比
+build/gzg bench/run_bench.gzg        # 与 Python 的性能对比（驱动也用 GZG 编写）
 build/gzg apps/game2048/main.gzg     # 用 GZG 写的 2048 游戏（含 AI）
 ```
 
@@ -40,8 +40,9 @@ build/gzg apps/game2048/main.gzg     # 用 GZG 写的 2048 游戏（含 AI）
 | 给 AI 的开发技能 | [.claude/skills/gzg/SKILL.md](.claude/skills/gzg/SKILL.md)（+ [reference](.claude/skills/gzg/reference.md)、[pitfalls](.claude/skills/gzg/pitfalls.md)）、[AGENTS.md](AGENTS.md) |
 | 解释器源码 | [src/](src/)，架构见 [docs/GZG实现说明.md](docs/GZG实现说明.md) |
 | 黑盒测试集 | [tests/](tests/)，运行器 [tests/run_tests.gzg](tests/run_tests.gzg) 本身用 GZG 编写 |
-| 性能测试与报告 | [bench/](bench/)，[docs/性能测试报告.md](docs/性能测试报告.md) |
-| Agent 开发的应用 | [apps/game2048/](apps/game2048/)，开发记录 [DEVLOG.md](apps/game2048/DEVLOG.md) |
+| 性能测试与报告 | [bench/](bench/)（用例与计时驱动 [run_bench.gzg](bench/run_bench.gzg) 均为 GZG），[docs/性能测试报告.md](docs/性能测试报告.md) |
+| Agent 开发的应用 | [apps/game2048/](apps/game2048/)，应用开发记录 [DEVLOG.md](apps/game2048/DEVLOG.md) |
+| 全项目开发记录（Agent 分工、时间线、问题与修复） | [docs/开发记录.md](docs/开发记录.md) |
 | 系统介绍 PPT | [docs/GZG语言介绍.pptx](docs/GZG语言介绍.pptx) |
 
 ## Make 目标

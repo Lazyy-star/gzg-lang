@@ -34,7 +34,8 @@ test: $(EXE)
 	$(EXE) tests/run_tests.gzg
 
 bench: $(EXE)
-	$(PYTHON) bench/run_bench.py
+	$(EXE) bench/run_bench.gzg
+	-$(PYTHON) bench/plot_chart.py
 
 stress:
 	@mkdir -p build/stress

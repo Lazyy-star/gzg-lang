@@ -18,7 +18,7 @@
 mingw32-make            # Windows (MinGW)；Linux/macOS 用 make。产物 build/gzg(.exe)
 build/gzg.exe tests/run_tests.gzg        # 全部黑盒测试（一个命令）
 build/gzg.exe tests/run_tests.gzg 字符串  # 只跑路径含关键字的测试
-python bench/run_bench.py                # 与 Python 的性能对比
+build/gzg.exe bench/run_bench.gzg        # 与 Python 的性能对比（驱动用 GZG 编写）
 ```
 
 ## 目录

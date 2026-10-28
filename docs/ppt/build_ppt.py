@@ -160,7 +160,7 @@ cards = [
                  "• C99 实现，{} 行，零依赖".format(FACTS["interp_lines"])]),
     ("自动化测试", ["• {} 个黑盒测试，{} 个分类".format(FACTS["test_count"], FACTS["test_dirs"]),
                "• 运行器本身用 GZG 编写", "• 一个命令：gzg tests/run_tests.gzg", "• GC 压力模式 + gcov 覆盖率"]),
-    ("性能", ["• 9 组同功能 GZG / Python 脚本", "• 几何平均快 {:.2f} 倍".format(BENCH["meta"]["geomean"]),
+    ("性能", ["• 9 组同功能 GZG / Python 脚本，驱动用 GZG 写", "• 几何平均快 {:.2f} 倍".format(BENCH["meta"]["geomean"]),
             "• 8 胜 1 负，负项有根因分析", "• 输出逐字校验一致"]),
     ("文档与 AI 开发", ["• 语法规则（含 EBNF）+ 开发指南", "• Claude Code Skill + AGENTS.md",
                    "• 新 Agent 仅凭文档写出 2048", "• 开发记录反哺文档改进"]),
@@ -398,7 +398,7 @@ textbox(s, Inches(6.5), Inches(1.6 + 0.33 * len(rows) + 0.15), Inches(6.3), Inch
 
 # ---------------- 12. 性能 ----------------
 s = page("性能测试：GZG vs CPython {}".format(BENCH["meta"]["python"].replace("Python ", "")),
-         "9 组功能相同的脚本，输出逐字校验一致；每项运行 {} 次取中位数（含进程启动）".format(BENCH["meta"]["runs"]))
+         "9 组功能相同的脚本，输出逐字校验一致；每项 {} 次取中位数；计时驱动 bench/run_bench.gzg 也用 GZG 编写".format(BENCH["meta"]["runs"]))
 s.shapes.add_picture(str(ROOT / "bench" / "results" / "chart.png"), Inches(0.45), Inches(1.5), width=Inches(7.6))
 rows = [["用例", "GZG", "Python", "倍数"]]
 for r in BENCH["results"]:

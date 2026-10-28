@@ -1,0 +1,147 @@
+#[ GZG 与 Python 的性能对比驱动（本身用 GZG 编写）
+
+用法（在仓库根目录执行）:
+    gzg bench/run_bench.gzg                 每个用例各运行 5 次
+    gzg bench/run_bench.gzg --runs 3        指定次数
+    gzg bench/run_bench.gzg fib loop        只跑指定用例
+    gzg bench/run_bench.gzg --python py     指定 Python 命令（默认 Windows 用 "py -3"，其他用 python3）
+
+对 bench/cases 下每一对同名的 x.gzg / x.py：
+  1. 各运行一次，校验两者 stdout 完全一致（保证比较的是同一个计算）；
+  2. 各运行 N 次，取墙钟时间中位数；
+  3. 输出对比表与几何平均，写入 bench/results/results.json 与 report.md。
+画柱状图需要 matplotlib，仍由 bench/plot_chart.py 完成（读取 results.json）。
+]#
+
+let windows = platform() == "windows"
+let gzg = windows ? "build\\gzg.exe" : "build/gzg"
+let python = windows ? "py -3" : "python3"
+let runs = 5
+let only = []
+let argv = args()
+let k = 0
+while k < len(argv) {
+    match argv[k] {
+        "--runs" => { k += 1; runs = int(argv[k]) }
+        "--python" => { k += 1; python = argv[k] }
+        name => only.push(name)
+    }
+    k += 1
+}
+
+const DESCRIPTIONS = {
+    fib: "递归函数调用 fib(32)",
+    loop: "300 万次整数运算的嵌套循环",
+    sieve: "埃氏筛 500 万（数组下标读写）",
+    quicksort: "手写快速排序 30 万个数（递归 + 数组）",
+    strings: "字符串插值、join/split、拼接",
+    wordfreq: "字典词频统计 40 万次 + 排序",
+    nbody: "N 体模拟 10 万步（结构体字段 + 浮点）",
+    closure: "闭包与 map/filter/reduce",
+    methods: "100 万次方法调用",
+}
+
+struct Result {
+    name, desc
+    gzg = 0.0
+    python = 0.0
+    speedup = 0.0
+    output_match = false
+    output = ""
+}
+
+fn normalize(text) => text.replace("\r\n", "\n").trim()
+
+# 运行一次，返回 [耗时秒, 输出]；失败时抛出异常
+fn run_once(cmd) {
+    let t0 = clock()
+    let r = run(cmd)
+    let elapsed = clock() - t0
+    if r.code != 0 { throw "命令失败（退出码 {r.code}）：{cmd}\n{r.output}" }
+    return [elapsed, normalize(r.output)]
+}
+
+fn median(xs) {
+    let s = xs.sorted()
+    let n = len(s)
+    return n % 2 == 1 ? s[n // 2] : (s[n // 2 - 1] + s[n // 2]) / 2
+}
+
+fn measure(cmd, n) {
+    let times = []
+    for i in 0..n { times.push(run_once(cmd)[0]) }
+    return median(times)
+}
+
+fn json_str(s) {
+    let out = s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n")
+    return "\"{out}\""
+}
+
+fn to_json(results, meta) {
+    let items = results.map(fn(r) => "    \{\"name\": {json_str(r.name)}, \"desc\": {json_str(r.desc)}, " +
+        "\"gzg\": {r.gzg}, \"python\": {r.python}, \"speedup\": {r.speedup}, " +
+        "\"output_match\": {r.output_match}, \"output\": {json_str(r.output)}\}")
+    let m = meta.items().map(fn(kv) => "{json_str(kv[0])}: {type(kv[1]) == "string" ? json_str(kv[1]) : str(kv[1])}")
+    return "\{\n  \"meta\": \{{m.join(", ")}\},\n  \"results\": [\n{items.join(",\n")}\n  ]\n\}\n"
+}
+
+fn main() {
+    if not file_exists(gzg.replace("\\", "/")) {
+        print("找不到解释器 {gzg}，请先运行 make")
+        exit(1)
+    }
+    let names = list_dir("bench/cases").filter(fn(f) => f.ends_with(".gzg")).map(fn(f) => f.slice(0, len(f) - 4))
+    if not only.is_empty() { names = names.filter(fn(n) => n in only) }
+    let gzg_version = run("{gzg} --version").output.trim()
+    let py_version = run("{python} --version").output.trim()
+    print("{gzg_version}  vs  {py_version}，每项运行 {runs} 次取中位数\n")
+    print("用例        {"GZG".pad_left(9)} {"Python".pad_left(9)}  Python/GZG")
+
+    let results = []
+    for name in names {
+        let gz_cmd = "{gzg} bench/cases/{name}.gzg"
+        let py_cmd = "{python} bench/cases/{name}.py"
+        let r = Result(name, DESCRIPTIONS.get(name, name))
+        let og = run_once(gz_cmd)[1]
+        let op = run_once(py_cmd)[1]
+        r.output_match = og == op
+        r.output = og
+        r.gzg = measure(gz_cmd, runs)
+        r.python = measure(py_cmd, runs)
+        r.speedup = r.python / r.gzg
+        results.push(r)
+        let flag = r.output_match ? "" : "  ⚠ 输出不一致!"
+        print("{name.pad_right(10)} {fmt(r.gzg, 3).pad_left(8)}s {fmt(r.python, 3).pad_left(8)}s  {fmt(r.speedup, 2).pad_left(6)}x{flag}")
+        if not r.output_match { print("    GZG:    {og}\n    Python: {op}") }
+    }
+
+    # 几何平均 = exp(平均(ln 倍数))
+    let geo = exp(results.map(fn(r) => log(r.speedup)).sum() / len(results))
+    print("\n几何平均：Python 耗时 / GZG 耗时 = {fmt(geo, 2)}x")
+
+    let meta = {gzg: gzg_version, python: py_version, runs: runs, machine: platform(), geomean: geo,
+                date: str(int(time()))}
+    run(windows ? "if not exist bench\\results mkdir bench\\results" : "mkdir -p bench/results")
+    write_file("bench/results/results.json", to_json(results, meta))
+
+    let lines = [
+        "# 性能测试结果（由 bench/run_bench.gzg 自动生成）", "",
+        "- 解释器：{gzg_version}；对照：{py_version}",
+        "- 方法：每个用例运行 {runs} 次，取进程墙钟时间中位数（含进程启动）；运行前校验两种实现输出一致", "",
+        "| 用例 | 测试内容 | GZG (s) | Python (s) | Python/GZG | 输出一致 |",
+        "|---|---|---:|---:|---:|:---:|",
+    ]
+    for r in results {
+        lines.push("| {r.name} | {r.desc} | {fmt(r.gzg, 3)} | {fmt(r.python, 3)} | {fmt(r.speedup, 2)}x | {r.output_match ? "✓" : "✗"} |")
+    }
+    lines.push("")
+    lines.push("几何平均：**{fmt(geo, 2)}x**（大于 1 表示 GZG 更快）")
+    lines.push("")
+    lines.push("![对比图](chart.png)")
+    write_file("bench/results/report.md", lines.join("\n") + "\n")
+    print("结果已写入 bench/results/results.json 与 report.md；画图：python bench/plot_chart.py")
+    if results.any(fn(r) => not r.output_match) { exit(1) }
+}
+
+main()
