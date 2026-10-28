@@ -8,7 +8,7 @@ struct Student {
 
 let students = [Student("小红", 95), Student("小明", 72), Student(name: "小刚")]
 for s in students.sorted(fn(s) => -s.score) {
-    print("{s.name.pad_right(4)} {s.score} {s.grade()}")
+    print("{s.name}  {str(s.score).pad_left(3)}  {s.grade()}")
 }
 
 如果 students.any(fn(s) => s.score < 60) {
