@@ -19,6 +19,7 @@ static void usage(void) {
     printf("  gzg -e \"<代码>\"          直接运行一段代码\n");
     printf("  gzg --dis <文件.gzg>      反汇编，打印编译出的字节码\n");
     printf("  gzg --tokens <文件.gzg>   打印词法分析得到的记号\n");
+    printf("  gzg --stats <文件.gzg>    运行后在 stderr 打印耗时与垃圾回收统计\n");
     printf("  gzg --version            显示版本\n");
 }
 
@@ -165,6 +166,14 @@ int main(int argc, char** argv) {
         }
     } else if (strcmp(argv[1], "--dis") == 0 && argc >= 3) {
         code = disassembleFile(argv[2]);
+    } else if (strcmp(argv[1], "--stats") == 0 && argc >= 3) {
+        setScriptArgs(argc, argv, 3);
+        double t0 = platformClock();
+        code = runFile(argv[2]);
+        double total = platformClock() - t0;
+        fprintf(stderr, "[统计] 总耗时 %.3f 秒；GC %d 次，共 %.3f 秒（%.1f%%）；累计分配 %.1f MB；堆峰值 %.1f MB\n",
+                total, vm.gcCount, vm.gcSeconds, total > 0 ? vm.gcSeconds / total * 100 : 0,
+                vm.totalAllocated / 1048576.0, vm.peakHeap / 1048576.0);
     } else if (strcmp(argv[1], "--tokens") == 0 && argc >= 3) {
         code = dumpTokens(argv[2]);
     } else if (argv[1][0] == '-' && argv[1][1] != '\0') {

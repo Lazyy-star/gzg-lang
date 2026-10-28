@@ -62,6 +62,11 @@ typedef struct {
     Value* tempRoots[16];        /* 编译期/原生函数临时根 */
     int tempRootCount;
     bool replMode;
+    /* 统计（gzg --stats） */
+    int gcCount;
+    double gcSeconds;
+    size_t totalAllocated;
+    size_t peakHeap;
 } VM;
 
 extern VM vm;

@@ -1650,7 +1650,7 @@ void initVM(void) {
     resetStack();
     vm.objects = NULL;
     vm.bytesAllocated = 0;
-    vm.nextGC = 1024 * 1024;
+    vm.nextGC = 8 * 1024 * 1024;
     vm.pendingError = NIL_VAL;
     initTable(&vm.strings);
     initTable(&vm.globalNames);

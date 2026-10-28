@@ -3,6 +3,7 @@
  * 字符串驻留池是弱引用：清扫前把未标记的字符串从池中删除。 */
 #include "memory.h"
 #include "compiler.h"
+#include "platform.h"
 #include "vm.h"
 
 #define GC_HEAP_GROW_FACTOR 2
@@ -10,6 +11,8 @@
 void* reallocate(void* pointer, size_t oldSize, size_t newSize) {
     vm.bytesAllocated += newSize - oldSize;
     if (newSize > oldSize) {
+        vm.totalAllocated += newSize - oldSize;
+        if (vm.bytesAllocated > vm.peakHeap) vm.peakHeap = vm.bytesAllocated;
 #ifdef GC_STRESS
         collectGarbage();
 #else
@@ -31,6 +34,8 @@ void* reallocate(void* pointer, size_t oldSize, size_t newSize) {
 void markObject(Obj* object) {
     if (object == NULL || object->marked) return;
     object->marked = true;
+    /* 叶子对象（不引用其他对象）不需要进入灰栈 */
+    if (object->type == OBJ_STRING || object->type == OBJ_NATIVE || object->type == OBJ_RANGE) return;
     if (vm.grayCapacity < vm.grayCount + 1) {
         vm.grayCapacity = GROW_CAPACITY(vm.grayCapacity);
         /* 灰栈用系统 realloc，避免在 GC 过程中递归触发 GC */
@@ -206,12 +211,15 @@ static void sweep(void) {
 }
 
 void collectGarbage(void) {
+    double t0 = platformClock();
     markRoots();
     traceReferences();
     tableRemoveWhite(&vm.strings);
     sweep();
     vm.nextGC = vm.bytesAllocated * GC_HEAP_GROW_FACTOR;
-    if (vm.nextGC < 1024 * 1024) vm.nextGC = 1024 * 1024;
+    if (vm.nextGC < 8 * 1024 * 1024) vm.nextGC = 8 * 1024 * 1024;   /* 小堆时避免频繁回收 */
+    vm.gcCount++;
+    vm.gcSeconds += platformClock() - t0;
 }
 
 void freeObjects(void) {

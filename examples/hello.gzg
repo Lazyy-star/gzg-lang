@@ -1,0 +1,33 @@
+# GZG 特色一览：运行 build/gzg examples/hello.gzg
+struct Student {
+    name, score = 0
+    fn grade() => match self.score {
+        90..=100 => "优", 60..90 => "良", _ => "差",
+    }
+}
+
+let students = [Student("小红", 95), Student("小明", 72), Student(name: "小刚")]
+for s in students.sorted(fn(s) => -s.score) {
+    print("{s.name.pad_right(4)} {s.score} {s.grade()}")
+}
+
+如果 students.any(fn(s) => s.score < 60) {
+    打印("有同学需要补考")
+}
+
+# 管道与高阶函数
+fn evens(xs) => xs.filter(fn(x) => x % 2 == 0)
+fn squares(xs) => xs.map(fn(x) => x * x)
+print(array(1..=10) |> evens |> squares)
+
+# 默认参数与命名参数
+fn greet(name, greeting = "你好", mark = "！") => "{greeting}，{name}{mark}"
+print(greet("世界"), greet("GZG", mark: "~"))
+
+# 异常
+try {
+    let empty = []
+    empty.pop()
+} catch e {
+    print("捕获到错误：{e}")
+}
