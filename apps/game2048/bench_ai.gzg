@@ -1,0 +1,21 @@
+# bench_ai.gzg —— AI 跑分脚本（开发调参用）：每 200 步打印进度，结束时打印分数、最大块、步数、用时、搜索节点数。
+# 用法：gzg apps/game2048/bench_ai.gzg <seed>
+
+import "ai.gzg"
+
+let a = args()
+if len(a) < 1 {
+    print("用法: gzg apps/game2048/bench_ai.gzg <seed>")
+    exit(2)
+}
+seed(int(a[0]))
+let g = Game()
+g.reset()
+let t = clock()
+while not g.is_over() {
+    let d = best_move(g.cells)
+    if d == nil { break }
+    g.step(d)
+    if g.moves % 200 == 0 { print("  moves", g.moves, "max", g.biggest(), "t", fmt(clock() - t, 1)) }
+}
+print("seed", a[0], "score", g.score, "max", g.biggest(), "moves", g.moves, "time", fmt(clock() - t, 1), "nodes", STATS.nodes)
