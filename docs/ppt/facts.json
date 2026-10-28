@@ -1,0 +1,79 @@
+{
+  "interp_lines": "7,815",
+  "line_counts": [
+    "377",
+    "1700",
+    "1683",
+    "1826",
+    "828",
+    "235",
+    "396",
+    "7815"
+  ],
+  "test_count": 136,
+  "test_dirs": 8,
+  "test_categories": [
+    [
+      "operators",
+      23
+    ],
+    [
+      "arrays",
+      22
+    ],
+    [
+      "lexer",
+      22
+    ],
+    [
+      "control",
+      19
+    ],
+    [
+      "strings",
+      18
+    ],
+    [
+      "types",
+      15
+    ],
+    [
+      "maps",
+      13
+    ],
+    [
+      "smoke",
+      4
+    ]
+  ],
+  "app_lines": 669,
+  "coverage": "65.9%（4995 行可执行代码）",
+  "git_log": "dc49d3d feat: GZG 解释器核心——词法分析、单遍编译器、字节码虚拟机、标记清除 GC\n762b882 docs: 语法规则文档；bench: 9 组 GZG/Python 对照性能用例；perf: 字符串拼接只拷贝一次、按…\n685ad41 feat: 内建函数库与平台层；tests: GZG 编写的测试运行器；docs: 开发指南与 Agent 技能文档\n27cbc17 2048：棋盘纯逻辑（移动合并、生成新块、胜负判断、撤销历史）\ncb72b3b 2048：棋盘单元测试（合并规则、四方向、无效移动、判负判胜、撤销）\n0e83662 feat: --stats 显示 GC 统计；perf: 叶子对象不入灰栈、最小 GC 阈值 8MB；docs: REA…\nff5383b docs: PPT 生成脚本（python-pptx，数据取自测试与性能结果）；示例对齐修正",
+  "commit_count": 7,
+  "author_line": "郭志罡 · 2024210937 · 程序设计实践",
+  "stats_sample": "$ gzg --stats bench/cases/strings.gzg\n[统计] 总耗时 0.617 秒；GC 15 次，共 0.229 秒（37.1%）；\n       累计分配 424.2 MB；堆峰值 60.4 MB\n\n$ gzg --stats bench/cases/fib.gzg\n[统计] 总耗时 0.188 秒；GC 0 次，共 0.000 秒（0.0%）；\n       累计分配 0.0 MB；堆峰值 0.0 MB\n\n# fib / loop / nbody / methods 全程零堆分配：\n# 数字是值类型，调用帧复用值栈",
+  "strings_analysis": [
+    "• --stats 显示 GC 占 37%，累计分配 424MB",
+    "• 热点是 2 万次 s += \"ab\"：GZG 字符串不可变且驻留，每次拼接都复制整串，O(n²)",
+    "• CPython 在引用计数为 1 时原地 realloc 追加，均摊 O(1)；关掉这个优化（多留一个引用）后 CPython 也要 0.15s，与 GZG 的 0.16s 相当",
+    "• 20 万个存活字符串让每次标记-清除扫描约 15ms；引用计数则无需扫描存活对象",
+    "• 已优化：拼接只复制一次 + 8 字节哈希，拼接段 0.63s → 0.16s；叶子对象不入灰栈",
+    "• 推荐写法 parts.push(x) + parts.join(\"\")：20 万片段只需 8ms"
+  ],
+  "test_summary": [
+    "待测试完成后填写"
+  ],
+  "app_subtitle": "待应用完成后填写",
+  "app_screen": "待应用完成后填写",
+  "app_points": [
+    "待应用完成后填写"
+  ],
+  "devlog_rows": [
+    [
+      "待填写",
+      "",
+      ""
+    ]
+  ],
+  "devlog_summary": "待填写"
+}

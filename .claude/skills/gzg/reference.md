@@ -22,12 +22,12 @@
 | `len(x)` | 字符串（字符数）/数组/字典/区间的长度 |
 | `array(x)` | 区间/字符串(按字符)/字典(键)/数组(浅拷贝) 转为数组 |
 | `copy(x)` | 数组/字典的浅拷贝，其他值原样返回 |
-| `fmt(x, n)` | 保留 n 位小数的字符串：`fmt(2.0/3, 3) == "0.667"` |
+| `fmt(x, n)` | 保留 n 位小数的字符串：`fmt(2.0/3, 3) == "0.667"`。舍入按 C 的 printf（恰好一半时取偶：`fmt(2.5, 0) == "2"`），与 `round` 不同 |
 | `hex(n)` `bin(n)` | `"0xff"`、`"0b101"` |
 | `chr(n)` `ord(s)` | 码点与字符互转，支持中文 |
 
 ### 数学
-`abs(x)`，`min(a, b, ...)` / `min(数组)`，`max(...)`，`floor(x)`、`ceil(x)`（返回 int），`round(x)`（四舍五入到 int，.5 远离零），`round(x, n)`（保留 n 位，返回 float），`sqrt(x)`，`pow(a, b)`，`sin cos tan atan2(y, x) exp`，`log(x)` 自然对数 / `log(x, base)`。常量：`PI` `E` `INT_MAX` `INT_MIN`。
+`abs(x)`，`min(a, b, ...)`（至少 2 个）/ `min(数组)`（非空），`max(...)`，`floor(x)`、`ceil(x)`（返回 int），`round(x)`（四舍五入到 int，.5 远离零），`round(x, n)`（保留 n 位，返回 float；受二进制浮点影响 `round(2.675, 2) == 2.68`、`round(1.005, 2) == 1.0`），`sqrt(x)`，`pow(a, b)`，`sin cos tan atan2(y, x) exp`，`log(x)` 自然对数 / `log(x, base)`。常量：`PI` `E` `INT_MAX` `INT_MIN`。
 
 ### 随机数（确定性的 xorshift 生成器）
 | 函数 | 说明 |
@@ -52,7 +52,7 @@
 | 函数 | 说明 |
 |---|---|
 | `args()` | 命令行参数数组（不含解释器和脚本名） |
-| `exit(code?)` | 立即结束程序 |
+| `exit(code?)` | 立即结束程序；退出码由操作系统取低 8 位（0~255） |
 | `platform()` | `"windows"`、`"linux"`、`"macos"` 等 |
 | `read_file(path)` | 读取整个文件为字符串，失败报错 |
 | `write_file(path, s)` / `append_file(path, s)` | 写入 / 追加 |
