@@ -376,6 +376,8 @@ static void parsePrecedence(Precedence precedence);
 static void function(FunctionType type, ObjString* name);
 static void matchExpr(bool canAssign);
 
+static bool allowIntMin = false;   /* 紧跟在一元负号后：允许 9223372036854775808，即 INT_MIN */
+
 static Value numberValue(Token* tok) {
     char buf[128];
     int n = 0;
@@ -399,6 +401,7 @@ static Value numberValue(Token* tok) {
         error("数字格式不正确");
         return INT_VAL(0);
     }
+    if (allowIntMin && base == 10 && v == (unsigned long long)INT64_MAX + 1) return INT_VAL(INT64_MIN);   /* 取负后仍是 INT_MIN */
     if (errno == ERANGE || (base == 10 && v > (unsigned long long)INT64_MAX)) {
         error("整数字面量超出 64 位范围");
         return INT_VAL(0);
@@ -408,7 +411,9 @@ static Value numberValue(Token* tok) {
 
 static void number(bool canAssign) {
     (void)canAssign;
-    emitConstant(numberValue(&parser.previous));
+    Value v = numberValue(&parser.previous);
+    allowIntMin = false;
+    emitConstant(v);
 }
 
 /* 处理转义序列，返回 malloc 的缓冲区 */
@@ -629,6 +634,32 @@ static void constError(Token* name) {
     error(msg);
 }
 
+/* 函数里引用的名字落到了全局：若与某个可见局部变量拼写接近，记下来供运行时报错提示 */
+static void recordLocalHint(Token* name) {
+    const char* best = NULL;
+    int bestLen = 0, bestD = 99;
+    for (Compiler* c = current; c != NULL; c = c->enclosing) {
+        for (int i = 0; i < c->localCount; i++) {
+            Token* t = &c->locals[i].name;
+            if (t->length == 0 || t->start[0] == ' ') continue;
+            int d = editDistance(name->start, name->length, t->start, t->length);
+            if (d < bestD && suggestLimitOk(name->length, t->length, d)) {
+                bestD = d;
+                best = t->start;
+                bestLen = t->length;
+            }
+        }
+    }
+    if (best == NULL) return;
+    ObjString* key = copyString(name->start, name->length);
+    push(OBJ_VAL(key));
+    ObjString* val = copyString(best, bestLen);
+    push(OBJ_VAL(val));
+    tableSet(&vm.localHints, key, OBJ_VAL(val));
+    pop();
+    pop();
+}
+
 static void namedVariable(Token name, bool canAssign) {
     uint8_t getOp, setOp;
     bool isConst = false;
@@ -641,6 +672,7 @@ static void namedVariable(Token name, bool canAssign) {
         getOp = OP_GET_UPVALUE;
         setOp = OP_SET_UPVALUE;
     } else {
+        if (current->enclosing != NULL) recordLocalHint(&name);
         arg = globalIndex(&name);
         isConst = vmIsConstGlobal(arg);
         getOp = OP_GET_GLOBAL;
@@ -800,6 +832,7 @@ static void subscript(bool canAssign) {
 static void unary(bool canAssign) {
     (void)canAssign;
     TokenType op = parser.previous.type;
+    allowIntMin = op == TOKEN_MINUS && check(TOKEN_INT) && !checkNext(TOKEN_STAR_STAR);
     if (op == TOKEN_NOT) parsePrecedence(PREC_NOT);
     else parsePrecedence(PREC_UNARY);
     switch (op) {
@@ -1240,6 +1273,11 @@ static void structDeclaration(void) {
         }
         if (!match(TOKEN_COMMA) && !check(TOKEN_RIGHT_BRACE) && !check(TOKEN_NEWLINE) && !check(TOKEN_SEMICOLON))
             errorAtCurrent("结构体成员之间用换行或 ',' 分隔");
+        if (parser.panicMode) {
+            /* 出错后跳到下一个成员，避免在同一个记号上反复报错（死循环） */
+            while (!check(TOKEN_NEWLINE) && !check(TOKEN_COMMA) && !check(TOKEN_RIGHT_BRACE) && !check(TOKEN_EOF)) advance();
+            match(TOKEN_COMMA);
+        }
         skipNewlines();
     }
     consume(TOKEN_RIGHT_BRACE, "结构体缺少 '}'");

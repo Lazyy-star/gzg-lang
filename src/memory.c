@@ -172,6 +172,7 @@ static void markRoots(void) {
     markArray(&vm.globalNameList);
     markTable(&vm.globalNames);
     markTable(&vm.imports);
+    markTable(&vm.localHints);
     markTable(&vm.stringMethods);
     markTable(&vm.arrayMethods);
     markTable(&vm.mapMethods);

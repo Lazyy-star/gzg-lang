@@ -89,7 +89,15 @@ bool vmError(const char* fmt, ...) {
     return vmThrowValue(OBJ_VAL(cstr(buf)));
 }
 
-static int levenshtein(const char* a, int la, const char* b, int lb) {
+int editDistance(const char* a, int la, const char* b, int lb);
+static int levenshtein(const char* a, int la, const char* b, int lb) { return editDistance(a, la, b, lb); }
+
+bool suggestLimitOk(int targetLen, int candLen, int dist) {
+    if (targetLen <= 2 || candLen <= 2) return false;
+    return dist <= (targetLen <= 5 ? 1 : 2);
+}
+
+int editDistance(const char* a, int la, const char* b, int lb) {
     if (la > 40 || lb > 40) return 99;
     int d[41][41];
     for (int i = 0; i <= la; i++) d[i][0] = i;
@@ -100,6 +108,8 @@ static int levenshtein(const char* a, int la, const char* b, int lb) {
             int m = d[i - 1][j] + 1;
             if (d[i][j - 1] + 1 < m) m = d[i][j - 1] + 1;
             if (d[i - 1][j - 1] + c < m) m = d[i - 1][j - 1] + c;
+            if (i > 1 && j > 1 && a[i - 1] == b[j - 2] && a[i - 2] == b[j - 1] && d[i - 2][j - 2] + 1 < m)
+                m = d[i - 2][j - 2] + 1;   /* 相邻字母换位算一次编辑（nmae -> name） */
             d[i][j] = m;
         }
     return d[la][lb];
@@ -175,6 +185,11 @@ static const char* foreignGlobals[][2] = {
 
 static const char* globalHint(ObjString* name) {
     Suggest s = newSuggest(name);
+    Value lh;
+    if (tableGet(&vm.localHints, name, &lh)) {
+        s.best = AS_CSTRING(lh);
+        return hint(&s);
+    }
     for (int i = 0; i < vm.globalNameList.count; i++) {
         if (IS_UNDEF(vm.globalValues.values[i])) continue;
         ObjString* n = AS_STRING(vm.globalNameList.values[i]);
@@ -1122,6 +1137,8 @@ L_BAD:
                 vm.stackTop[-1] = v;
                 DISPATCH();
             }
+            if (!tableGet(&vm.mapMethods, name, &v))
+                ERROR("字典中没有键 \"%s\"（可以用 .get(键, 默认值) 安全读取）", name->chars);
         }
         Value member;
         bool keep;
@@ -1657,6 +1674,7 @@ void initVM(void) {
     initValueArray(&vm.globalValues);
     initValueArray(&vm.globalNameList);
     initTable(&vm.imports);
+    initTable(&vm.localHints);
     initTable(&vm.stringMethods);
     initTable(&vm.arrayMethods);
     initTable(&vm.mapMethods);

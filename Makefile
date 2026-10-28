@@ -42,10 +42,12 @@ stress:
 	build/stress/gzg tests/run_tests.gzg --gzg build/stress/gzg
 
 coverage:
-	@mkdir -p build/cov
-	$(CC) -std=c99 -O0 -g --coverage -D__USE_MINGW_ANSI_STDIO=1 -o build/cov/gzg $(SRC) $(LDLIBS)
+	@rm -rf build/cov && mkdir -p build/cov
+	cd build/cov && $(CC) -std=c99 -O0 --coverage -D__USE_MINGW_ANSI_STDIO=1 -o gzg ../../src/*.c $(LDLIBS)
 	build/cov/gzg tests/run_tests.gzg --gzg build/cov/gzg
-	cd build/cov && gcov -o . ../../src/*.c > gcov_summary.txt; tail -n 1 gcov_summary.txt
+	@cd build/cov && for f in ../../src/*.c; do printf "%-14s " $$(basename $$f); gcov -n -o . $$f | grep -m1 "Lines executed"; done
+	@cd build/cov && for f in ../../src/*.c; do gcov -n -o . $$f | grep -m1 "Lines executed"; done | \
+		awk -F'[:% ]+' '{ hit += $$3 * $$5 / 100; all += $$5 } END { printf "合计           Lines executed:%.2f%% of %d\n", hit * 100 / all, all }'
 
 clean:
 	rm -rf build

@@ -42,6 +42,7 @@ typedef struct {
     uint8_t* globalConst;        /* 下标 -> 是否 const */
     int globalConstCap;
     Table imports;       /* 已导入文件的绝对路径 */
+    Table localHints;    /* 编译期记录：被当成全局的名字 -> 拼写接近的局部变量名 */
 
     Table stringMethods, arrayMethods, mapMethods, rangeMethods;
     ObjString* initString;       /* "to_str" */
@@ -83,7 +84,9 @@ bool vmError(const char* fmt, ...);                 /* 设置运行时错误，�
 bool vmThrowValue(Value v);
 bool vmCall(Value callee, int argc, Value* args, Value* result);  /* 从原生代码回调 GZG 函数 */
 bool vmStringify(Value v, bool quoted, ObjString** out);         /* 调用 to_str 等 */
-int globalSlot(ObjString* name);                    /* 取得/创建全局变量下标 */
+int globalSlot(ObjString* name);
+int editDistance(const char* a, int la, const char* b, int lb);
+bool suggestLimitOk(int targetLen, int candLen, int dist);                    /* 取得/创建全局变量下标 */
 void defineNative(const char* name, NativeFn fn, int minArgs, int maxArgs);
 void defineNativeMethod(Table* table, const char* name, NativeFn fn, int minArgs, int maxArgs);
 void vmSetConstGlobal(int slot, bool isConst);

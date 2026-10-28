@@ -1,0 +1,18 @@
+{
+  "author_line": "郭志罡 · 2024210937 · 程序设计实践",
+  "stats_sample": "$ gzg --stats bench/cases/strings.gzg\n[统计] 总耗时 0.617 秒；GC 15 次，共 0.229 秒（37.1%）；\n       累计分配 424.2 MB；堆峰值 60.4 MB\n\n$ gzg --stats bench/cases/fib.gzg\n[统计] 总耗时 0.188 秒；GC 0 次，共 0.000 秒（0.0%）；\n       累计分配 0.0 MB；堆峰值 0.0 MB\n\n# fib / loop / nbody / methods 全程零堆分配：\n# 数字是值类型，调用帧复用值栈",
+  "strings_analysis": [
+    "• --stats 显示 GC 占 37%，累计分配 424MB",
+    "• 热点是 2 万次 s += \"ab\"：GZG 字符串不可变且驻留，每次拼接都复制整串，O(n²)",
+    "• CPython 在引用计数为 1 时原地 realloc 追加，均摊 O(1)；关掉这个优化（多留一个引用）后 CPython 也要 0.15s，与 GZG 的 0.16s 相当",
+    "• 20 万个存活字符串让每次标记-清除扫描约 15ms；引用计数则无需扫描存活对象",
+    "• 已优化：拼接只复制一次 + 8 字节哈希，拼接段 0.63s → 0.16s；叶子对象不入灰栈",
+    "• 推荐写法 parts.push(x) + parts.join(\"\")：20 万片段只需 8ms"
+  ],
+  "test_summary": ["待测试完成后填写"],
+  "app_subtitle": "待应用完成后填写",
+  "app_screen": "待应用完成后填写",
+  "app_points": ["待应用完成后填写"],
+  "devlog_rows": [["待填写", "", ""]],
+  "devlog_summary": "待填写"
+}
