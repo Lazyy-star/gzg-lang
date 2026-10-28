@@ -711,6 +711,15 @@ static void selfExpr(bool canAssign) {
 
 /* ---------------- 表达式：调用、成员、下标 ---------------- */
 
+/* 表达式后面紧跟 if：多半是 Python 的条件表达式 a if c else b */
+static bool pythonTernaryHint(void) {
+    if (!check(TOKEN_IF)) return false;
+    errorAtCurrent("GZG 没有 'a if 条件 else b' 写法，条件表达式请写成 '条件 ? a : b'");
+    /* 跳过本行剩余部分，避免 if/else 被当成语句而产生一串连带错误 */
+    while (!check(TOKEN_NEWLINE) && !check(TOKEN_SEMICOLON) && !check(TOKEN_EOF)) advance();
+    return true;
+}
+
 /* 解析实参列表（左括号已消费）。命名参数 name: expr 必须在位置参数之后。
  * 返回实参总数；*kwConst 为命名参数名数组的常量下标，没有命名参数时为 -1。 */
 static uint8_t argumentList(int* kwConst) {
@@ -743,7 +752,7 @@ static uint8_t argumentList(int* kwConst) {
             argCount++;
         } while (match(TOKEN_COMMA));
     }
-    consume(TOKEN_RIGHT_PAREN, "实参列表缺少 ')'");
+    if (!pythonTernaryHint()) consume(TOKEN_RIGHT_PAREN, "实参列表缺少 ')'");
     return (uint8_t)argCount;
 }
 
@@ -1093,6 +1102,7 @@ static void consumeTerminator(void) {
     if (match(TOKEN_NEWLINE) || match(TOKEN_SEMICOLON)) return;
     if (check(TOKEN_RIGHT_BRACE) || check(TOKEN_EOF)) return;
     if (parser.armMode && check(TOKEN_COMMA)) return;
+    if (pythonTernaryHint()) return;
     errorAtCurrent("语句后面多了内容（一行写多条语句请用 ';' 分隔）");
 }
 

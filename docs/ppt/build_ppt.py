@@ -423,7 +423,7 @@ card(s, Inches(6.8), Inches(1.3), Inches(6.05), Inches(5.5), "strings 用例为�
 s = page("给 AI 的开发文档：让编程 Agent 写对一门没见过的语言")
 table(s, Inches(0.55), Inches(1.3), Inches(7.2), [
     ["文件", "作用"],
-    ["`.claude/skills/gzg/SKILL.md`", "Claude Code 技能：语法速览 + 15 条与 Python/JS 的差异"],
+    ["`.claude/skills/gzg/SKILL.md`", "Claude Code 技能：语法速览 + 18 条与 Python/JS 的差异"],
     ["`.claude/skills/gzg/reference.md`", "全部内建函数与方法（签名、返回值、边界行为）"],
     ["`.claude/skills/gzg/pitfalls.md`", "报错信息 → 原因 → 改法 对照表"],
     ["`AGENTS.md` / `CLAUDE.md`", "通用 Agent 入口：构建、测试、目录、修改规范"],

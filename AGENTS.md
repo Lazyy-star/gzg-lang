@@ -4,7 +4,7 @@
 
 ## 用 GZG 写程序时
 
-**先读 `.claude/skills/gzg/SKILL.md`**（语法速览 + 15 条与 Python/JS 不同的规则），再按需查：
+**先读 `.claude/skills/gzg/SKILL.md`**（语法速览 + 18 条与 Python/JS 不同的规则），再按需查：
 
 - `.claude/skills/gzg/reference.md`：全部内建函数与方法
 - `.claude/skills/gzg/pitfalls.md`：报错信息 → 原因 → 改法

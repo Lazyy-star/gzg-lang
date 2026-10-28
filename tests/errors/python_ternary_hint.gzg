@@ -1,0 +1,4 @@
+# Python 式条件表达式 a if c else b：给出改写建议，且只报这一条错误
+let x = 5
+print("大" if x > 3 else "小")
+# expect-compile-error: 条件表达式请写成 '条件 ? a : b'
