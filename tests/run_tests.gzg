@@ -12,7 +12,7 @@
     # expect-error: 除数不能为 0               stderr 中应包含的文字，且退出码为 70
     # expect-compile-error: 缺少 ')'          stderr 中应包含的文字，且退出码为 65
     # expect-exit: 3                          显式指定退出码
-    同名的 .in 文件会作为标准输入；文件名以 _ 开头的是辅助模块，不单独运行。
+    同名的 .in 文件会作为标准输入；以 _ 开头的文件（辅助模块）和目录（如 _pending 待定用例）不运行。
     每个测试运行时 args()[0] 是被测解释器的路径（tests/cli 用它测试命令行选项）。
 ]#
 
@@ -44,7 +44,7 @@ fn collect(dir) {
         let path = "{dir}/{name}"
         if name.ends_with(".gzg") {
             if not name.starts_with("_") and name != "run_tests.gzg" { found.push(path) }
-        } elif not name.contains(".") {
+        } elif not name.contains(".") and not name.starts_with("_") {   # _ 开头的目录（如 _pending）整体跳过
             found.extend(collect(path))
         }
     }
