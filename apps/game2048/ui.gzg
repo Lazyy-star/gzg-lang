@@ -1,0 +1,105 @@
+# ui.gzg —— 显示与命令解析。
+# render_* 函数只返回字符串，不直接输出；parse_command 是纯函数。
+
+import "board.gzg"
+
+const RESET = "\e[0m"
+const CELL_W = 7
+
+# 每个数值的 256 色背景/前景
+const TILE_COLORS = {
+    "0": ["\e[48;5;250m", "\e[38;5;244m"],
+    "2": ["\e[48;5;255m", "\e[38;5;238m"],
+    "4": ["\e[48;5;230m", "\e[38;5;238m"],
+    "8": ["\e[48;5;215m", "\e[38;5;255m"],
+    "16": ["\e[48;5;209m", "\e[38;5;255m"],
+    "32": ["\e[48;5;203m", "\e[38;5;255m"],
+    "64": ["\e[48;5;196m", "\e[38;5;255m"],
+    "128": ["\e[48;5;229m", "\e[38;5;238m"],
+    "256": ["\e[48;5;228m", "\e[38;5;238m"],
+    "512": ["\e[48;5;227m", "\e[38;5;238m"],
+    "1024": ["\e[48;5;226m", "\e[38;5;238m"],
+    "2048": ["\e[48;5;220m", "\e[38;5;255m"],
+}
+const BIG_COLOR = ["\e[48;5;53m", "\e[38;5;255m"]
+
+fn tile_color(v) => TILE_COLORS.get(str(v), BIG_COLOR)
+
+# 渲染一个方块（宽 CELL_W，3 行高中的一行）
+fn render_cell(v, middle) {
+    let [bg, fg] = tile_color(v)
+    let text = ""
+    if middle {
+        text = v == 0 ? "·" : str(v)
+    }
+    return "{bg}{fg}\e[1m{text.center(CELL_W)}{RESET}"
+}
+
+# 渲染整个棋盘为字符串。color=false 时输出纯文本（便于重定向到文件查看）
+fn render_board(cells, color = true) {
+    let out = []
+    if not color {
+        let sep = "+" + ("-" * CELL_W + "+") * SIZE
+        out.push(sep)
+        for r in 0..SIZE {
+            let row = ["|"]
+            for c in 0..SIZE {
+                let v = cells[r * SIZE + c]
+                row.push((v == 0 ? "." : str(v)).center(CELL_W), "|")
+            }
+            out.push(row.join(""))
+            out.push(sep)
+        }
+        return out.join("\n")
+    }
+    for r in 0..SIZE {
+        for line in 0..3 {
+            let row = ["  "]
+            for c in 0..SIZE {
+                row.push(render_cell(cells[r * SIZE + c], line == 1))
+                row.push(" ")
+            }
+            out.push(row.join(""))
+        }
+        out.push("")
+    }
+    return out.join("\n")
+}
+
+fn render_status(game, best) {
+    let status = "分数 {game.score}   最高分 {max(best, game.score)}   步数 {game.moves}   最大块 {game.biggest()}"
+    if game.won {
+        status += "   \e[1;33m★ 已达成 2048！\e[0m"
+    }
+    return status
+}
+
+const HELP_TEXT = "操作：
+  w / a / s / d          上 / 左 / 下 / 右（也可输入 up/down/left/right 或 上/下/左/右）
+  u                      撤销上一步（可连续撤销多步）
+  r                      重新开始
+  auto                   让 AI 接管，自动玩到结束
+  h                      显示本帮助
+  q                      退出"
+
+# 命令别名表：输入（转小写、去空白后）→ 命令
+const COMMANDS = {
+    w: "up", up: "up", "上": "up",
+    s: "down", down: "down", "下": "down",
+    a: "left", left: "left", "左": "left",
+    d: "right", right: "right", "右": "right",
+    u: "undo", undo: "undo", "撤销": "undo",
+    r: "restart", restart: "restart", "重来": "restart",
+    h: "help", help: "help", "?": "help", "帮助": "help",
+    q: "quit", quit: "quit", exit: "quit", "退出": "quit",
+    auto: "auto", ai: "auto",
+}
+
+# 把一行输入解析成命令名；无法识别返回 nil；空行返回 "none"
+fn parse_command(line) {
+    let s = line.trim().lower()
+    if s == "" or s.starts_with("#") {
+        return "none"
+    }
+    return COMMANDS.get(s)
+}

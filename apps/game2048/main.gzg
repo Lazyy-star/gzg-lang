@@ -1,0 +1,232 @@
+# main.gzg —— 2048 终端版入口：命令行参数、交互循环、AI 模式、最高分文件。
+#
+# 用法：
+#   gzg apps/game2048/main.gzg                     交互模式
+#   gzg apps/game2048/main.gzg --seed 1 < moves.txt   用文件重放
+#   gzg apps/game2048/main.gzg --auto [--fast] [--seed N] [--depth D] [--plain]
+
+import "ui.gzg"
+import "ai.gzg"
+
+const HIGHSCORE_NAME = "highscore.txt"
+const APP_DIR = "apps/game2048"
+
+# 最高分文件路径：GZG 的文件函数相对于当前目录，而脚本所在目录拿不到，
+# 所以优先用仓库根目录下的 apps/game2048/，其次当前目录（在 apps/game2048 里运行时）。
+fn highscore_path() {
+    if file_exists(APP_DIR + "/main.gzg") {
+        return APP_DIR + "/" + HIGHSCORE_NAME
+    }
+    return HIGHSCORE_NAME
+}
+
+fn load_highscore() {
+    let p = highscore_path()
+    if not file_exists(p) {
+        return 0
+    }
+    try {
+        return int(read_file(p).trim())
+    } catch e {
+        return 0
+    }
+}
+
+# 只在破纪录时写文件；文件不存在时创建
+fn save_highscore(score) {
+    let best = load_highscore()
+    if score > best or not file_exists(highscore_path()) {
+        write_file(highscore_path(), str(max(score, best)) + "\n")
+        return score > best
+    }
+    return false
+}
+
+# 解析命令行参数
+struct Options {
+    auto = false
+    fast = false
+    plain = false        # 不用 ANSI 颜色、不清屏
+    seed = nil
+    depth = nil
+}
+
+fn parse_args(argv) {
+    let opt = Options()
+    let i = 0
+    while i < len(argv) {
+        let a = argv[i]
+        if a == "--auto" {
+            opt.auto = true
+        } elif a == "--fast" {
+            opt.fast = true
+        } elif a == "--plain" {
+            opt.plain = true
+        } elif a == "--seed" or a == "--depth" {
+            if i + 1 >= len(argv) {
+                throw "{a} 后面需要一个整数"
+            }
+            let v = int(argv[i + 1])
+            if a == "--seed" { opt.seed = v } else { opt.depth = v }
+            i += 1
+        } elif a == "-h" or a == "--help" {
+            print("用法: gzg apps/game2048/main.gzg [--auto] [--fast] [--seed N] [--depth D] [--plain]")
+            exit(0)
+        } else {
+            throw "未知参数 '{a}'（可用 --help 查看）"
+        }
+        i += 1
+    }
+    return opt
+}
+
+# 应用：持有游戏状态和显示选项
+struct App {
+    game
+    opt
+    best = 0
+    message = ""
+
+    fn draw() {
+        let color = not self.opt.plain
+        if color {
+            write("\e[2J\e[H")
+        }
+        print(color ? "\e[1m== 2048 ==\e[0m  输入 h 查看帮助" : "== 2048 ==  输入 h 查看帮助")
+        print(render_board(self.game.cells, color))
+        print(render_status(self.game, self.best))
+        if self.message != "" {
+            print(self.message)
+            self.message = ""
+        }
+    }
+
+    fn record_score() {
+        if self.game.score > self.best {
+            self.best = self.game.score
+        }
+        save_highscore(self.game.score)
+    }
+
+    fn restart() {
+        self.record_score()
+        self.game = Game()
+        self.game.reset()
+    }
+
+    # 执行一次移动，并处理胜负提示
+    fn do_move(dir) {
+        let was_won = self.game.won
+        if not self.game.step(dir) {
+            self.message = "这个方向动不了。"
+            return
+        }
+        if self.game.won and not was_won {
+            self.message = "恭喜达成 2048！可以继续玩，也可以 q 退出。"
+        }
+        if self.game.is_over() {
+            self.message = "游戏结束！没有可移动的方向了。输入 u 撤销、r 重来、q 退出。"
+            self.record_score()
+        }
+    }
+
+    # AI 接管直到结束；verbose 时每步重绘
+    fn run_ai(verbose) {
+        let t0 = clock()
+        while not self.game.is_over() {
+            let dir = best_move(self.game.cells, self.opt.depth)
+            if dir == nil {
+                break
+            }
+            self.game.step(dir)
+            if verbose {
+                self.message = "AI 第 {self.game.moves} 步：{dir}"
+                self.draw()
+            }
+        }
+        self.record_score()
+        let secs = clock() - t0
+        return secs
+    }
+}
+
+fn print_result(app, secs) {
+    let g = app.game
+    print("最终分数: {g.score}")
+    print("最大块: {g.biggest()}")
+    print("步数: {g.moves}")
+    print("用时: {fmt(secs, 1)} 秒")
+    print(g.won ? "结果: 胜利（达成 2048）" : "结果: 未达成 2048")
+    print("最高分: {max(app.best, g.score)}")
+}
+
+fn interactive(app) {
+    app.draw()
+    while true {
+        let line = input("> ")
+        if line == nil {
+            # 输入结束（管道/文件重放）：保存分数后正常退出
+            app.record_score()
+            print()
+            print("输入结束，最终分数 {app.game.score}，最大块 {app.game.biggest()}")
+            return
+        }
+        let cmd = parse_command(line)
+        if cmd == nil {
+            app.message = "无法识别的命令 '{line.trim()}'，输入 h 查看帮助。"
+        } elif cmd == "none" {
+            # 空行：只重绘
+        } elif cmd == "quit" {
+            app.record_score()
+            print("再见！最终分数 {app.game.score}，最大块 {app.game.biggest()}")
+            return
+        } elif cmd == "help" {
+            app.message = HELP_TEXT
+        } elif cmd == "undo" {
+            app.message = app.game.undo() ? "已撤销一步。" : "没有可以撤销的步骤了。"
+        } elif cmd == "restart" {
+            app.restart()
+            app.message = "新的一局开始了。"
+        } elif cmd == "auto" {
+            let secs = app.run_ai(true)
+            print_result(app, secs)
+            return
+        } else {
+            app.do_move(cmd)
+        }
+        app.draw()
+    }
+}
+
+fn main() {
+    let opt = nil
+    try {
+        opt = parse_args(args())
+    } catch e {
+        print("参数错误: {e}")
+        exit(2)
+    }
+    if opt.seed != nil {
+        seed(opt.seed)
+    } else {
+        seed(int(time()))
+    }
+    let game = Game()
+    game.reset()
+    let app = App(game, opt, load_highscore())
+    if opt.auto {
+        if opt.fast {
+            let secs = app.run_ai(false)
+            print(render_board(app.game.cells, not opt.plain))
+            print_result(app, secs)
+        } else {
+            app.draw()
+            let secs = app.run_ai(true)
+            print_result(app, secs)
+        }
+        return
+    }
+    interactive(app)
+}
+
+main()
