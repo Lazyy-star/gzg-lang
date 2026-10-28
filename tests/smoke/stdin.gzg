@@ -1,0 +1,4 @@
+let a = input()
+let b = input()
+print(int(a) + int(b))   # expect: 7
+print(input())   # expect: nil

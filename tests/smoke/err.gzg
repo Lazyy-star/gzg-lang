@@ -1,0 +1,3 @@
+print("before")  # expect: before
+let x = 1 / 0
+# expect-error: 除数不能为 0

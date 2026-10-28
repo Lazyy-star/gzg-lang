@@ -136,10 +136,42 @@ static const char* hint(Suggest* s) {
     return buf;
 }
 
+/* 其他语言里的常见写法 -> GZG 的写法（编辑距离找不到时使用） */
+static const char* foreignNames[][2] = {
+    {"append", "push"}, {"add", "push"}, {"length", "len"}, {"size", "len"},
+    {"strip", "trim"}, {"lstrip", "trim_start"}, {"rstrip", "trim_end"},
+    {"startswith", "starts_with"}, {"endswith", "ends_with"}, {"startsWith", "starts_with"},
+    {"endsWith", "ends_with"}, {"toUpperCase", "upper"}, {"toLowerCase", "lower"},
+    {"indexOf", "index_of"}, {"index", "index_of"}, {"includes", "contains"}, {"forEach", "each"},
+    {"splitlines", "lines"}, {"isdigit", "is_digit"}, {"isalpha", "is_alpha"}, {"pop_front", "remove_at(0)"},
+    {"del", "remove"}, {"delete", "remove"}, {"contains_key", "has"}, {"has_key", "has"}, {"update", "merge"},
+    {"ljust", "pad_right"}, {"rjust", "pad_left"}, {"zfill", "pad_left(n, \"0\")"}, {"format", "插值 \"{x}\""},
+    {NULL, NULL},
+};
+
+static void suggestForeign(Suggest* s, ObjString* name) {
+    if (s->best != NULL) return;
+    for (int i = 0; foreignNames[i][0] != NULL; i++) {
+        if (strcmp(foreignNames[i][0], name->chars) == 0) {
+            s->best = foreignNames[i][1];
+            return;
+        }
+    }
+}
+
 static Suggest newSuggest(ObjString* name) {
     Suggest s = {name->chars, name->length, NULL, 99};
     return s;
 }
+
+static const char* foreignGlobals[][2] = {
+    {"None", "nil"}, {"null", "nil"}, {"True", "true"}, {"False", "false"}, {"println", "print"},
+    {"printf", "print"}, {"puts", "print"}, {"console", "print"}, {"echo", "print"}, {"raw_input", "input"},
+    {"length", "len"}, {"size", "len"}, {"def", "fn"}, {"function", "fn"}, {"var", "let"}, {"elif_", "elif"},
+    {"self_", "self"}, {"this", "self"}, {"sorted", "arr.sorted()"}, {"sum", "arr.sum()"}, {"list", "array"},
+    {"dict", "{}"}, {"isinstance", "type(x) == \"名字\""}, {"math", "sqrt / floor 等全局函数"},
+    {NULL, NULL},
+};
 
 static const char* globalHint(ObjString* name) {
     Suggest s = newSuggest(name);
@@ -148,6 +180,8 @@ static const char* globalHint(ObjString* name) {
         ObjString* n = AS_STRING(vm.globalNameList.values[i]);
         suggestConsider(&s, n->chars, n->length);
     }
+    for (int i = 0; s.best == NULL && foreignGlobals[i][0] != NULL; i++)
+        if (strcmp(foreignGlobals[i][0], name->chars) == 0) s.best = foreignGlobals[i][1];
     return hint(&s);
 }
 
@@ -586,6 +620,7 @@ static bool resolveMember(Value receiver, ObjString* name, Value* out, bool* kee
     if (methods != NULL) {
         Suggest s = newSuggest(name);
         suggestTable(&s, methods);
+        suggestForeign(&s, name);
         return vmError("%s 类型没有方法 '%s'%s", valueTypeName(receiver), name->chars, hint(&s));
     }
     return vmError("%s 类型的值没有方法 '%s'", valueTypeName(receiver), name->chars);

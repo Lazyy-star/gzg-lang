@@ -1,0 +1,140 @@
+#!/usr/bin/env gzg
+#[ GZG 黑盒测试运行器（本身也是用 GZG 写的）
+
+用法（在仓库根目录执行）:
+    gzg tests/run_tests.gzg                  运行全部测试
+    gzg tests/run_tests.gzg 字符串            只运行路径中包含“字符串”的测试
+    gzg tests/run_tests.gzg --gzg 路径        指定被测解释器（默认 build/gzg）
+    gzg tests/run_tests.gzg -v               显示每个通过的用例
+
+测试文件约定（tests/<分类>/*.gzg）:
+    print(1 + 1)        # expect: 2           该行应输出的 stdout（按出现顺序逐行比对）
+    # expect-error: 除数不能为 0               stderr 中应包含的文字，且退出码为 70
+    # expect-compile-error: 缺少 ')'          stderr 中应包含的文字，且退出码为 65
+    # expect-exit: 3                          显式指定退出码
+    同名的 .in 文件会作为标准输入；文件名以 _ 开头的是辅助模块，不单独运行。
+]#
+
+let argv = args()
+let interpreter = platform() == "windows" ? "build/gzg.exe" : "build/gzg"
+let filter = ""
+let verbose = false
+let i = 0
+while i < len(argv) {
+    match argv[i] {
+        "--gzg" => { i += 1; interpreter = argv[i] }
+        "-v" => { verbose = true }
+        _ => { filter = argv[i] }
+    }
+    i += 1
+}
+
+const RED = "\e[31m"
+const GREEN = "\e[32m"
+const GRAY = "\e[90m"
+const RESET = "\e[0m"
+
+fn native_path(p) => platform() == "windows" ? p.replace("/", "\\") : p
+
+# 递归收集测试文件
+fn collect(dir) {
+    let found = []
+    for name in list_dir(dir) {
+        let path = "{dir}/{name}"
+        if name.ends_with(".gzg") {
+            if not name.starts_with("_") and name != "run_tests.gzg" { found.push(path) }
+        } elif not name.contains(".") {
+            found.extend(collect(path))
+        }
+    }
+    return found
+}
+
+struct Expect {
+    lines = []
+    error = nil
+    compile_error = nil
+    exit_code = 0
+}
+
+fn parse_expect(source) {
+    let e = Expect()
+    for line in source.lines() {
+        let p = line.find("# expect: ")
+        if p >= 0 { e.lines.push(line.slice(p + 10).trim_end()); continue }
+        p = line.find("# expect-error: ")
+        if p >= 0 { e.error = line.slice(p + 16).trim(); e.exit_code = 70; continue }
+        p = line.find("# expect-compile-error: ")
+        if p >= 0 { e.compile_error = line.slice(p + 24).trim(); e.exit_code = 65; continue }
+        p = line.find("# expect-exit: ")
+        if p >= 0 { e.exit_code = int(line.slice(p + 15).trim()) }
+    }
+    return e
+}
+
+fn normalize(text) {
+    let out = text.replace("\r\n", "\n")
+    while out.ends_with("\n") { out = out.slice(0, len(out) - 1) }
+    return out
+}
+
+let stderr_file = "build/test_stderr.txt"
+
+fn run_one(path) {
+    let e = parse_expect(read_file(path))
+    let cmd = "\"{native_path(interpreter)}\" \"{path}\""
+    let input_file = path.slice(0, len(path) - 4) + ".in"
+    if file_exists(input_file) { cmd += " < \"{input_file}\"" }
+    cmd += " 2> \"{stderr_file}\""
+    let r = run(cmd)
+    let stdout = normalize(r.output)
+    let stderr = file_exists(stderr_file) ? normalize(read_file(stderr_file)) : ""
+    let problems = []
+    let expected = e.lines.join("\n")
+    if stdout != expected {
+        problems.push("stdout 不一致\n      期望: {expected.replace("\n", "⏎")}\n      实际: {stdout.replace("\n", "⏎")}")
+    }
+    if r.code != e.exit_code { problems.push("退出码期望 {e.exit_code}，实际 {r.code}") }
+    let want = e.error or e.compile_error
+    if want and not stderr.contains(want) {
+        problems.push("stderr 中缺少: {want}\n      实际 stderr: {stderr.replace("\n", "⏎")}")
+    }
+    if not want and stderr != "" and e.exit_code == 0 { problems.push("出现了意外的 stderr: {stderr}") }
+    return problems
+}
+
+run(platform() == "windows" ? "if not exist build mkdir build" : "mkdir -p build")
+let files = collect("tests").filter(fn(f) => filter == "" or f.contains(filter)).sorted()
+let passed = 0
+let failed = []
+let per_dir = {}
+let t0 = clock()
+for path in files {
+    let dir = path.split("/")[1]
+    if not per_dir.has(dir) { per_dir[dir] = [0, 0] }
+    per_dir[dir][1] += 1
+    let problems = run_one(path)
+    if problems.is_empty() {
+        passed += 1
+        per_dir[dir][0] += 1
+        if verbose { print("{GREEN}PASS{RESET} {path}") }
+    } else {
+        failed.push(path)
+        print("{RED}FAIL{RESET} {path}")
+        for p in problems { print("    {p}") }
+    }
+}
+
+print()
+print("分类统计:")
+for dir, c in per_dir {
+    let mark = c[0] == c[1] ? GREEN + "✓" + RESET : RED + "✗" + RESET
+    print("  {mark} {dir.pad_right(12)} {c[0]}/{c[1]}")
+}
+let elapsed = fmt(clock() - t0, 2)
+if failed.is_empty() {
+    print("{GREEN}全部通过：{passed}/{len(files)} 个测试，用时 {elapsed} 秒{RESET}")
+} else {
+    print("{RED}失败 {len(failed)} 个，通过 {passed}/{len(files)}，用时 {elapsed} 秒{RESET}")
+    exit(1)
+}
