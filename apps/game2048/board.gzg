@@ -1,0 +1,227 @@
+# board.gzg —— 2048 的纯逻辑：棋盘表示、移动合并、生成新块、胜负判断。
+# 本文件不做任何输入输出，方便用 assert_eq 测试，也供 ai.gzg 复用。
+#
+# 棋盘用长度 16 的一维数组表示，按行优先：下标 = 行 * 4 + 列，0 表示空格。
+
+const SIZE = 4
+const CELLS = 16
+const WIN_TILE = 2048
+
+# 四个方向的名字（也是 move 的参数）
+const DIRS = ["left", "right", "up", "down"]
+
+# 每个方向对应 4 条“线”，每条线是 4 个下标，按“朝移动方向推挤”的顺序排列：
+# 例如 left 的第一条线是 [0, 1, 2, 3]，合并时从下标 0 那端开始。
+fn build_lines(dir) {
+    let lines = []
+    for k in 0..SIZE {
+        let line = []
+        for t in 0..SIZE {
+            let idx = match dir {
+                "left" => k * SIZE + t,
+                "right" => k * SIZE + (SIZE - 1 - t),
+                "up" => t * SIZE + k,
+                "down" => (SIZE - 1 - t) * SIZE + k,
+                _ => -1,
+            }
+            line.push(idx)
+        }
+        lines.push(line)
+    }
+    return lines
+}
+
+# 预先算好四个方向的线，避免每步重复计算
+const LINES = {
+    left: build_lines("left"),
+    right: build_lines("right"),
+    up: build_lines("up"),
+    down: build_lines("down"),
+}
+
+# 把一行向左推挤并合并。返回 [新行, 本行得分]。
+# 规则：先去掉 0，再从左到右两两合并相等的相邻块，每个块一步内最多合并一次。
+fn slide_row(row) {
+    let tiles = row.filter(fn(x) => x != 0)
+    let out = []
+    let gained = 0
+    let i = 0
+    while i < len(tiles) {
+        if i + 1 < len(tiles) and tiles[i] == tiles[i + 1] {
+            let merged = tiles[i] * 2
+            out.push(merged)
+            gained += merged
+            i += 2
+        } else {
+            out.push(tiles[i])
+            i += 1
+        }
+    }
+    while len(out) < len(row) {
+        out.push(0)
+    }
+    return [out, gained]
+}
+
+# 行变换缓存：键是 4 个数拼成的字符串。AI 会反复移动相同的行，缓存能省很多时间。
+let ROW_CACHE = {}
+
+fn slide_row_cached(row) {
+    let key = "{row[0]},{row[1]},{row[2]},{row[3]}"
+    let hit = ROW_CACHE.get(key)
+    if hit != nil {
+        return hit
+    }
+    let res = slide_row(row)
+    ROW_CACHE[key] = res
+    return res
+}
+
+# 对整个棋盘按方向移动。不修改输入，返回 [新棋盘, 得分, 是否有变化]。
+fn move_cells(cells, dir) {
+    let out = copy(cells)
+    let gained = 0
+    let changed = false
+    for line in LINES[dir] {
+        let row = [cells[line[0]], cells[line[1]], cells[line[2]], cells[line[3]]]
+        let [new_row, g] = slide_row_cached(row)
+        gained += g
+        for t in 0..SIZE {
+            if new_row[t] != row[t] {
+                changed = true
+                out[line[t]] = new_row[t]
+            }
+        }
+    }
+    return [out, gained, changed]
+}
+
+# 所有空格的下标
+fn empty_indices(cells) {
+    let res = []
+    for i, v in cells {
+        if v == 0 {
+            res.push(i)
+        }
+    }
+    return res
+}
+
+fn max_tile(cells) => cells.max()
+
+# 是否还能移动：有空格，或有横向/纵向相邻的相等块
+fn can_move(cells) {
+    for i in 0..CELLS {
+        let v = cells[i]
+        if v == 0 {
+            return true
+        }
+        let c = i % SIZE
+        if c < SIZE - 1 and cells[i + 1] == v {
+            return true
+        }
+        if i + SIZE < CELLS and cells[i + SIZE] == v {
+            return true
+        }
+    }
+    return false
+}
+
+fn is_lost(cells) => not can_move(cells)
+
+fn has_won(cells) => max_tile(cells) >= WIN_TILE
+
+# 在随机空格上放一个新块：90% 是 2，10% 是 4。原地修改，返回放置的下标（没有空格返回 -1）。
+# 随机数来自全局生成器，调用前 seed(n) 即可复现。
+fn spawn_tile(cells) {
+    let empties = empty_indices(cells)
+    if len(empties) == 0 {
+        return -1
+    }
+    let idx = empties[randint(0, len(empties) - 1)]
+    cells[idx] = random() < 0.9 ? 2 : 4
+    return idx
+}
+
+# 从 4 个一维行构造棋盘（测试和调试用）
+fn from_rows(rows) {
+    let cells = []
+    for r in rows {
+        for v in r {
+            cells.push(v)
+        }
+    }
+    return cells
+}
+
+fn to_rows(cells) {
+    let rows = []
+    for r in 0..SIZE {
+        rows.push(cells.slice(r * SIZE, r * SIZE + SIZE))
+    }
+    return rows
+}
+
+# 一步的快照，用于撤销
+struct Snapshot {
+    cells
+    score
+    won
+}
+
+# 游戏状态：棋盘、分数、步数、撤销历史
+struct Game {
+    cells = []
+    score = 0
+    moves = 0
+    won = false          # 是否已经达到过 2048（达到后可以继续玩）
+    history = []         # Snapshot 栈
+    max_history = 1000
+
+    fn reset() {
+        self.cells = [0] * CELLS
+        self.score = 0
+        self.moves = 0
+        self.won = false
+        self.history = []
+        spawn_tile(self.cells)
+        spawn_tile(self.cells)
+    }
+
+    # 执行一步移动。返回 true 表示棋盘有变化（并已生成新块）。
+    fn step(dir) {
+        let [next, gained, changed] = move_cells(self.cells, dir)
+        if not changed {
+            return false
+        }
+        self.history.push(Snapshot(copy(self.cells), self.score, self.won))
+        if len(self.history) > self.max_history {
+            self.history.remove_at(0)
+        }
+        self.cells = next
+        self.score += gained
+        self.moves += 1
+        spawn_tile(self.cells)
+        if has_won(self.cells) {
+            self.won = true
+        }
+        return true
+    }
+
+    # 撤销上一步，可连续多次。返回是否成功。
+    fn undo() {
+        if len(self.history) == 0 {
+            return false
+        }
+        let snap = self.history.pop()
+        self.cells = snap.cells
+        self.score = snap.score
+        self.won = snap.won
+        self.moves -= 1
+        return true
+    }
+
+    fn can_undo() => len(self.history) > 0
+    fn is_over() => is_lost(self.cells)
+    fn biggest() => max_tile(self.cells)
+}
