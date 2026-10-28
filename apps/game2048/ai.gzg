@@ -1,0 +1,171 @@
+# ai.gzg —— expectimax 自动玩家。纯计算，不做输入输出。
+#
+# 搜索树：玩家节点（取 4 个方向中期望值最大的）与机会节点（每个空格以 0.9/0.1 概率出现 2/4，取加权平均）交替。
+# 叶子用启发式评估。评估按“线”计算：4 行 + 4 列，每条线的分数只取决于这 4 个数，所以按线缓存。
+
+import "board.gzg"
+
+# 启发式权重（思路参考经典 2048 AI：在 log2 等级上计算）
+const W_LOST = 200000.0     # 每条线的基础分，保证活着的局面分数为正
+const W_EMPTY = 270.0       # 空格
+const W_MERGE = 700.0       # 相邻相等（可合并）
+const W_MONO = 47.0         # 单调性惩罚
+const W_SUM = 11.0          # 大数惩罚（鼓励合并）
+const POW_MONO = 4.0
+const POW_SUM = 3.5
+
+const MIN_PROB = 0.001      # 概率小于此值的分支直接用评估值截断
+
+fn rank(v) {
+    let r = 0
+    while v > 1 {
+        v = v // 2
+        r += 1
+    }
+    return r
+}
+
+let LINE_CACHE = {}
+
+# 单条线（4 个数）的启发式分数
+fn line_score(a, b, c, d) {
+    let key = "{a},{b},{c},{d}"
+    let hit = LINE_CACHE.get(key)
+    if hit != nil {
+        return hit
+    }
+    let ranks = [rank(a), rank(b), rank(c), rank(d)]
+    let sum = 0.0
+    let empty = 0
+    let merges = 0
+    let prev = 0
+    let counter = 0
+    for r in ranks {
+        sum += pow(r, POW_SUM)
+        if r == 0 {
+            empty += 1
+        } else {
+            if prev == r {
+                counter += 1
+            } elif counter > 0 {
+                merges += 1 + counter
+                counter = 0
+            }
+            prev = r
+        }
+    }
+    if counter > 0 {
+        merges += 1 + counter
+    }
+    # 单调性：分别累计“向左递增”和“向右递增”的违反量，取较小者作惩罚
+    let mono_left = 0.0
+    let mono_right = 0.0
+    for i in 1..4 {
+        let x = ranks[i - 1]
+        let y = ranks[i]
+        if x > y {
+            mono_left += pow(x, POW_MONO) - pow(y, POW_MONO)
+        } else {
+            mono_right += pow(y, POW_MONO) - pow(x, POW_MONO)
+        }
+    }
+    let score = W_LOST + W_EMPTY * empty + W_MERGE * merges -
+        W_MONO * min(mono_left, mono_right) - W_SUM * sum
+    LINE_CACHE[key] = score
+    return score
+}
+
+# 整盘评估：4 行 + 4 列
+fn evaluate(cells) {
+    let total = 0.0
+    for k in 0..4 {
+        let r = k * 4
+        total += line_score(cells[r], cells[r + 1], cells[r + 2], cells[r + 3])
+        total += line_score(cells[k], cells[k + 4], cells[k + 8], cells[k + 12])
+    }
+    return total
+}
+
+# 搜索统计（便于调参，不影响结果）
+struct SearchStats {
+    nodes = 0
+}
+let STATS = SearchStats()
+
+# 置换表：同一次 best_move 内，不同走法序列常常到达相同局面。键 = 棋盘 + 剩余深度。
+let TRANS = {}
+
+# 机会节点：对每个空格放 2/4 取期望
+fn chance_node(cells, depth, prob) {
+    let empties = empty_indices(cells)
+    let n = len(empties)
+    if n == 0 {
+        return max_node(cells, depth, prob)
+    }
+    if depth <= 0 or prob < MIN_PROB {
+        return evaluate(cells)
+    }
+    let key = cells.join(",") + "|" + str(depth)
+    let hit = TRANS.get(key)
+    if hit != nil {
+        return hit
+    }
+    let total = 0.0
+    for idx in empties {
+        cells[idx] = 2
+        total += 0.9 * max_node(cells, depth, prob * 0.9 / n)
+        cells[idx] = 4
+        total += 0.1 * max_node(cells, depth, prob * 0.1 / n)
+        cells[idx] = 0
+    }
+    let result = total / n
+    TRANS[key] = result
+    return result
+}
+
+# 玩家节点：4 个方向取最大；都动不了时返回 0（死局）
+fn max_node(cells, depth, prob) {
+    STATS.nodes += 1
+    let best = 0.0
+    for dir in DIRS {
+        let [next, gained, changed] = move_cells(cells, dir)
+        if changed {
+            let v = chance_node(next, depth - 1, prob)
+            if v > best {
+                best = v
+            }
+        }
+    }
+    return best
+}
+
+# 根据空格数选择搜索深度：空格越少局面越危险，搜得越深
+fn choose_depth(cells) {
+    let n = len(empty_indices(cells))
+    if n >= 8 {
+        return 1
+    }
+    if n >= 4 {
+        return 2
+    }
+    return 3
+}
+
+# 返回最佳方向；无路可走时返回 nil
+fn best_move(cells, depth = nil) {
+    let d = depth or choose_depth(cells)
+    TRANS = {}
+    let best_dir = nil
+    let best_val = -1.0
+    for dir in DIRS {
+        let [next, gained, changed] = move_cells(cells, dir)
+        if changed {
+            let v = chance_node(next, d, 1.0)
+            if v > best_val {
+                best_val = v
+                best_dir = dir
+            }
+        }
+    }
+    return best_dir
+}
