@@ -1,0 +1,14 @@
+# 字符串：插值构造、拼接、split/join、查找
+let parts = []
+for i in 0..200000 {
+    parts.push("item{i}")
+}
+let text = parts.join(",")
+let fields = text.split(",")
+let total = 0
+for f in fields {
+    if f.ends_with("7") { total += len(f) }
+}
+let s = ""
+for i in 0..20000 { s += "ab" }
+print(len(text), len(fields), total, len(s), text.find("item199999"))

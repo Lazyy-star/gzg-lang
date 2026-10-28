@@ -832,14 +832,7 @@ static bool powValue(Value a, Value b, Value* out) {
 /* 字符串、数组的 + 与 * */
 static bool addObjects(Value a, Value b, Value* out) {
     if (IS_STRING(a) && IS_STRING(b)) {
-        ObjString* x = AS_STRING(a);
-        ObjString* y = AS_STRING(b);
-        int len = x->length + y->length;
-        char* buf = (char*)malloc(len + 1);
-        memcpy(buf, x->chars, x->length);
-        memcpy(buf + x->length, y->chars, y->length);
-        buf[len] = '\0';
-        *out = OBJ_VAL(takeString(buf, len));
+        *out = OBJ_VAL(concatStrings(AS_STRING(a), AS_STRING(b)));
         return true;
     }
     if (IS_ARRAY(a) && IS_ARRAY(b)) {

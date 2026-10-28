@@ -1,0 +1,12 @@
+# 方法调用：面向对象风格的计数器
+struct Counter {
+    value = 0
+    step = 1
+    fn tick() { self.value += self.step }
+    fn get() => self.value
+}
+let cs = [Counter(), Counter(step: 2), Counter(step: 3)]
+for i in 0..1000000 {
+    cs[i % 3].tick()
+}
+print(cs[0].get(), cs[1].get(), cs[2].get())

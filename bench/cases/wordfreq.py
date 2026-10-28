@@ -1,0 +1,10 @@
+# 字典：词频统计（插入、查找、更新、排序）
+words = ["alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa"]
+seed = 42
+freq = {}
+for i in range(400000):
+    seed = (seed * 1103515245 + 12345) % 2147483648
+    w = words[seed % 10] + str(seed % 97)
+    freq[w] = freq.get(w, 0) + 1
+top = sorted(freq.items(), key=lambda kv: -kv[1] * 10000 + len(kv[0]))
+print(len(freq), top[0][0], top[0][1])

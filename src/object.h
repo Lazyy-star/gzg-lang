@@ -154,6 +154,7 @@ static inline bool isObjType(Value v, ObjType t) { return IS_OBJ(v) && AS_OBJ(v)
 
 ObjString* copyString(const char* chars, int length);   /* 复制并驻留 */
 ObjString* takeString(char* chars, int length);         /* 接管 malloc 出的缓冲区 */
+ObjString* concatStrings(ObjString* a, ObjString* b);
 ObjString* cstr(const char* s);
 ObjFunction* newFunction(void);
 ObjNative* newNative(NativeFn fn, const char* name, int minArgs, int maxArgs);

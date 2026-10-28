@@ -438,7 +438,7 @@ static char* unescape(const char* s, int len, int* outLen) {
             case 'x': case 'u': {
                 int digits = e == 'x' ? 2 : 4;
                 if (e == 'u' && i + 1 < len && s[i + 1] == '{') {
-                    /* \u{1F600} */
+                    /* \u{1F600}：i 指向 '{'，下面的循环用 s[++i] 读取数字 */
                     int j = i + 2;
                     while (j < len && s[j] != '}') j++;
                     digits = j - (i + 2);
@@ -510,7 +510,7 @@ static void interpolation(bool canAssign) {
             emitStringPart(&seg);
             parts++;
         }
-        if (check(TOKEN_RIGHT_BRACE) || check(TOKEN_STRING) || check(TOKEN_INTERP)) {
+        if ((check(TOKEN_STRING) || check(TOKEN_INTERP)) && parser.current.start[0] == '}') {
             errorAtCurrent("插值 {} 中缺少表达式");
             return;
         }

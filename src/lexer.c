@@ -244,7 +244,13 @@ static Token stringPart(void) {
         if (c == '\n') newline();
         else if (c == '\\') {
             if (isAtEnd()) return errorToken("字符串没有闭合（缺少 \"）");
-            if (advance() == '\n') newline();
+            char e = advance();
+            if (e == '\n') newline();
+            else if (e == 'u' && peek() == '{') {
+                /* \u{XXXX} 中的花括号不是插值 */
+                while (!isAtEnd() && peek() != '}' && peek() != '"') advance();
+                if (peek() == '}') advance();
+            }
         } else if (c == '"') {
             return makeToken(TOKEN_STRING);
         } else if (c == '{') {

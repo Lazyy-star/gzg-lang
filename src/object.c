@@ -41,27 +41,55 @@ int utf8Offset(ObjString* s, int charIndex) {
 
 /* ---------------- 字符串 ---------------- */
 
+/* 每次处理 8 字节的乘法-异或哈希：比逐字节的 FNV-1a 快数倍，长字符串拼接时差别明显 */
 static uint32_t hashString(const char* key, int length) {
-    uint32_t hash = 2166136261u;   /* FNV-1a */
-    for (int i = 0; i < length; i++) {
-        hash ^= (uint8_t)key[i];
-        hash *= 16777619;
+    uint64_t h = 0x9E3779B97F4A7C15ULL ^ (uint64_t)length;
+    int i = 0;
+    for (; i + 8 <= length; i += 8) {
+        uint64_t w;
+        memcpy(&w, key + i, 8);
+        h = (h ^ w) * 0xff51afd7ed558ccdULL;
+        h ^= h >> 32;
     }
-    return hash;
+    uint64_t tail = 0;
+    for (int k = 0; i < length; i++, k += 8) tail |= (uint64_t)(uint8_t)key[i] << k;
+    h = (h ^ tail) * 0xc4ceb9fe1a85ec53ULL;
+    h ^= h >> 29;
+    return (uint32_t)h;
+}
+
+static ObjString* allocRaw(int length) {
+    ObjString* string = (ObjString*)allocateObject(sizeof(ObjString) + length + 1, OBJ_STRING);
+    string->length = length;
+    string->chars[length] = '\0';
+    return string;
 }
 
 ObjString* copyString(const char* chars, int length) {
     uint32_t hash = hashString(chars, length);
     ObjString* interned = tableFindString(&vm.strings, chars, length, hash);
     if (interned != NULL) return interned;
-
-    ObjString* string = (ObjString*)allocateObject(sizeof(ObjString) + length + 1, OBJ_STRING);
-    string->length = length;
-    string->hash = hash;
+    ObjString* string = allocRaw(length);
     memcpy(string->chars, chars, length);
-    string->chars[length] = '\0';
+    string->hash = hash;
     string->charCount = utf8Count(chars, length);
     push(OBJ_VAL(string));   /* 插入驻留表时可能触发 GC */
+    tableSet(&vm.strings, string, NIL_VAL);
+    pop();
+    return string;
+}
+
+/* 拼接：直接在新对象里构造，只拷贝一次、只哈希一次。若已有相同内容的驻留字符串则丢弃新对象。 */
+ObjString* concatStrings(ObjString* a, ObjString* b) {
+    int length = a->length + b->length;
+    ObjString* string = allocRaw(length);   /* 可能触发 GC：调用者须保证 a、b 仍在栈上 */
+    memcpy(string->chars, a->chars, a->length);
+    memcpy(string->chars + a->length, b->chars, b->length);
+    string->hash = hashString(string->chars, length);
+    ObjString* interned = tableFindString(&vm.strings, string->chars, length, string->hash);
+    if (interned != NULL) return interned;   /* 新对象没有被引用，下次 GC 回收 */
+    string->charCount = a->charCount + b->charCount;
+    push(OBJ_VAL(string));
     tableSet(&vm.strings, string, NIL_VAL);
     pop();
     return string;

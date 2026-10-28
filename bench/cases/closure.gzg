@@ -1,0 +1,10 @@
+# 闭包与高阶函数：map / filter / reduce
+fn make_adder(k) => fn(x) => x + k
+let add3 = make_adder(3)
+let data = array(0..300000)
+let total = 0
+for round in 0..5 {
+    let r = data.map(add3).filter(fn(x) => x % 3 == 0).reduce(fn(a, b) => a + b, 0)
+    total += r
+}
+print(total)

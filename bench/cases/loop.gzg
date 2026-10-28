@@ -1,0 +1,8 @@
+# 整数算术与嵌套循环
+let total = 0
+for i in 0..3000 {
+    for j in 0..1000 {
+        total = (total + i * j + (i ^ j)) % 1000000007
+    }
+}
+print(total)
