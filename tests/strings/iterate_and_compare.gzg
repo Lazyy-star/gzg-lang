@@ -1,0 +1,12 @@
+# 遍历字符串按字符；字符串比较；字符串是值（方法不修改原值）
+for ch in "你好a" { write(ch, "|") }
+print()   # expect: 你|好|a|
+for i, ch in "ab" { write(" ", i, ch) }
+print()   # expect:  0a 1b
+let s = "hello"
+let u = s.upper()
+print(s, u)   # expect: hello HELLO
+print("abc" == "abc", "abc" != "ABC")   # expect: true true
+let parts = []
+for c in "a,b" { if c != "," { parts.push(c) } }
+print(parts.join("+"))   # expect: a+b

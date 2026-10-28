@@ -1,0 +1,4 @@
+# 循环导入不会无限递归：每个文件只执行一次
+import "_cycle_a.gzg"   # expect: 执行 b
+# expect: 执行 a
+print("main")   # expect: main

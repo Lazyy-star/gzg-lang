@@ -1,0 +1,24 @@
+# 按引用捕获：多个闭包共享同一个变量，修改对双方（含外层函数）可见
+fn make_pair() {
+    let v = 0
+    let inc = fn() { v += 1 }
+    let get = fn() => v
+    inc()
+    inc()
+    return [inc, get, v]
+}
+let [inc, get, snapshot] = make_pair()
+inc()
+print(get(), snapshot)   # expect: 3 2
+let x = 1
+let read_x = fn() => x
+x = 99
+print(read_x())   # expect: 99
+fn outer() {
+    let s = "a"
+    let add = fn(t) { s += t }
+    add("b")
+    add("c")
+    return s
+}
+print(outer())   # expect: abc

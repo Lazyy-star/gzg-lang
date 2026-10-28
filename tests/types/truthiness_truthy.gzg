@@ -1,0 +1,8 @@
+# 真值规则：除假值外都为真（非零数、非空串含空格、非空容器、函数、结构体、非空区间）
+fn t(v) => v ? "真" : "假"
+print(t(true), t(1), t(-1), t(0.5), t(-0.1))   # expect: 真 真 真 真 真
+print(t(" "), t("0"), t("false"), t([0]), t([nil]), t({a: 0}))   # expect: 真 真 真 真 真 真
+print(t(0..1), t(print), t(fn() => nil))   # expect: 真 真 真
+struct E { }
+print(t(E), t(E()))   # expect: 真 真
+print(bool(1), bool("x"), bool([[]]))   # expect: true true true

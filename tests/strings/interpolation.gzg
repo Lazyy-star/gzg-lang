@@ -1,0 +1,14 @@
+# 字符串插值：任意表达式、嵌套插值、按 str() 规则转换
+let name = "世界"
+print("你好，{name}！1 + 1 = {1 + 1}")   # expect: 你好，世界！1 + 1 = 2
+print("{"内层 {name}"}")   # expect: 内层 世界
+let n = 3
+print("{n}{n}", "a{n * 2}b")   # expect: 33 a6b
+print("{"{"{n}"}"}")   # expect: 3
+print("{[1, 2]} {nil} {true} {1.5} {2.0}")   # expect: [1, 2] nil true 1.5 2.0
+print("{ {a: 1}.a } {[1, 2][1]} {"x" + "y"}")   # expect: 1 2 xy
+print("{n > 0 ? "是" : "否"} {len("ab")}")   # expect: 是 2
+print("{{a: 1}}")   # expect: {"a": 1}
+print("中文{n}插值")   # expect: 中文3插值
+fn f(x) => x * 10
+print("调用 {f(n)} 和 {[1, 2, 3].map(fn(v) => v + 1)}")   # expect: 调用 30 和 [2, 3, 4]

@@ -1,0 +1,10 @@
+# 在函数中执行 import（运行时才导入）；导入的定义仍在全局可见
+fn load() {
+    import "_mathlib.gzg"
+    return "已加载"
+}
+print("调用前")   # expect: 调用前
+print(load())   # expect: 加载 mathlib
+# expect: 已加载
+print(lib_square(4))   # expect: 16
+print(load())   # expect: 已加载

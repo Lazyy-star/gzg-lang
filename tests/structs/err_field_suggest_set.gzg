@@ -1,0 +1,5 @@
+# 字段名拼错（赋值）时给出建议
+struct P { name, age = 0 }
+let p = P("a")
+p.agee = 3
+# expect-error: 你是不是想写 'age'？

@@ -1,0 +1,6 @@
+# hex / bin / fmt(x, n)
+print(hex(255), bin(5), hex(0), bin(0), hex(4096))   # expect: 0xff 0b101 0x0 0b0 0x1000
+print(fmt(2.0 / 3, 3), fmt(2.0 / 3, 3) == "0.667")   # expect: 0.667 true
+print(fmt(1, 2), fmt(PI, 4), fmt(-1.5, 1), fmt(2.5, 0) + "|")   # expect: 1.00 3.1416 -1.5 2|
+print(type(fmt(1.0, 1)))   # expect: string
+print(int("255") == 0xff, bin(10) == "0b1010")   # expect: true true

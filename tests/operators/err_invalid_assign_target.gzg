@@ -1,0 +1,5 @@
+# 赋值目标无效：a + b = 1
+let a = 1
+let b = 2
+a + b = 1
+# expect-compile-error: 赋值目标无效

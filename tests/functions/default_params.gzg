@@ -1,0 +1,12 @@
+# 默认参数：可省略；可引用前面的参数
+fn greet(name, greeting = "你好", times = 1) {
+    return ("{greeting}, {name}! " * times).trim()
+}
+print(greet("小明"))   # expect: 你好, 小明!
+print(greet("Bob", "Hi", 2))   # expect: Hi, Bob! Hi, Bob!
+fn f(a, b = a * 2) => [a, b]
+print(f(1), f(2, 5))   # expect: [1, 2] [2, 5]
+fn g(a, b = a + 1, c = a + b) => [a, b, c]
+print(g(1), g(1, 10))   # expect: [1, 2, 3] [1, 10, 11]
+fn h(x = nil) => x
+print(h(), h(0))   # expect: nil 0

@@ -1,0 +1,3 @@
+# 中文关键字 导入 等价于 import
+导入 "_mathlib.gzg"   # expect: 加载 mathlib
+打印(lib_add(2, 3))   # expect: 5

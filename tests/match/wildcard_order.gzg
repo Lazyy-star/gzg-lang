@@ -1,0 +1,15 @@
+# 通配符 _ 匹配一切；自上而下尝试，第一个匹配的分支生效
+fn f(v) {
+    match v {
+        _ if v == 1 => print("守卫通配")
+        1 => print("不会到这里")
+        _ => print("通配 {v}")
+    }
+}
+f(1)   # expect: 守卫通配
+f("x")   # expect: 通配 x
+match nil { _ => print("nil 也匹配通配") }   # expect: nil 也匹配通配
+match 5 {
+    1..10 => print("先写的区间")   # expect: 先写的区间
+    5 => print("后写的字面量")
+}

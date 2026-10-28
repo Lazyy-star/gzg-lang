@@ -1,0 +1,3 @@
+# for 的可迭代表达式含 ?: 时需要括号
+for x in true ? [1] : [2] { }
+# expect-compile-error: for 循环的可迭代表达式较复杂时请用括号括起来

@@ -1,0 +1,15 @@
+# 区间模式：a..b 左闭右开，a..=b 闭区间
+fn cls(v) {
+    match v {
+        4..10 => print("4 到 9")
+        10..=99 => print("两位数")
+        _ => print("其他")
+    }
+}
+cls(4)   # expect: 4 到 9
+cls(9)   # expect: 4 到 9
+cls(10)   # expect: 两位数
+cls(99)   # expect: 两位数
+cls(100)   # expect: 其他
+cls(3)   # expect: 其他
+cls(-5)   # expect: 其他

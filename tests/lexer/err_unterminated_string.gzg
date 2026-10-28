@@ -1,0 +1,3 @@
+# 字符串没有闭合
+let s = "abc
+# expect-compile-error: 字符串没有闭合

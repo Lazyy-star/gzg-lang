@@ -1,0 +1,7 @@
+# 基本算术 + - * / 及结果类型
+print(7 + 2, 7 - 2, 7 * 2, 7 / 2)   # expect: 9 5 14 3.5
+print(type(7 + 2), type(7 / 7))   # expect: int float
+print(-3 + 5, 3 - 5, -2 * -3)   # expect: 2 -2 6
+print(+5, -(-5), - -5)   # expect: 5 5 5
+print(1.5 + 1.5, 0.5 * 4)   # expect: 3.0 2.0
+print(10 - 3 - 2, 100 / 10 / 2)   # expect: 5 5.0

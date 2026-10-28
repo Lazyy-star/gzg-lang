@@ -1,0 +1,29 @@
+# 大量临时对象（结构体实例、字典、数组、闭包）触发 GC，存活对象与链表结构保持正确
+# （规模控制在 stress 构建——每次分配都触发 GC——也能较快跑完）
+struct Node { v, next = nil }
+let head = nil
+for i in 0..3000 {
+    head = Node(i, head)
+    let garbage = {k: [i, i + 1], s: "g{i}"}
+    let f = fn() => garbage.k
+}
+let c = 0
+let sum = 0
+let p = head
+while p != nil { c += 1; sum += p.v; p = p.next }
+print(c, head.v, sum)   # expect: 3000 2999 4498500
+let big = []
+for i in 0..3000 { big.push([i, "s{i}"]) }
+print(big[1234], len(big))   # expect: [1234, "s1234"] 3000
+let survivors = []
+for i in 0..4000 {
+    let tmp = [i, [i], {(i): i}]
+    if i % 1000 == 0 { survivors.push(tmp) }
+}
+print(survivors)   # expect: [[0, [0], {0: 0}], [1000, [1000], {1000: 1000}], [2000, [2000], {2000: 2000}], [3000, [3000], {3000: 3000}]]
+let counters = []
+for i in 0..2000 {
+    let n = i
+    counters.push(fn() { n += 1; return n })
+}
+print(counters[0](), counters[1999](), counters[1999]())   # expect: 1 2000 2001

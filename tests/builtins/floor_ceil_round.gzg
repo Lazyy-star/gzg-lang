@@ -1,0 +1,7 @@
+# floor/ceil 返回 int；round(x) 四舍五入到 int（.5 远离零）；round(x, n) 返回 float
+print(floor(2.7), floor(-2.1), ceil(2.1), ceil(-2.7))   # expect: 2 -3 3 -2
+print(type(floor(1.5)), type(ceil(1.5)), floor(3))   # expect: int int 3
+print(round(2.5), round(-2.5), round(2.4), round(0.5), round(-0.5), round(1.5))   # expect: 3 -3 2 1 -1 2
+print(type(round(2.5)))   # expect: int
+print(round(3.14159, 2), round(2.0, 0), round(-1.25, 1))   # expect: 3.14 2.0 -1.3
+print(type(round(1.5, 1)), round(10, 2))   # expect: float 10.0

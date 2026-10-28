@@ -1,0 +1,16 @@
+# 下一行以 .标识符 或 |> 开头时自动续行（链式调用）
+let r = [1, 2, 3, 4]
+    .filter(fn(x) => x % 2 == 0)
+    .map(fn(x) => x * 10)
+print(r)   # expect: [20, 40]
+fn double(x) => x * 2
+fn add(x, y) => x + y
+let p = 3
+    |> double
+    |> add(1)
+print(p)   # expect: 7
+let s = "  Hello  "
+
+    .trim()
+    .upper()
+print(s)   # expect: HELLO

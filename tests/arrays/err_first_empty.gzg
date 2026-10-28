@@ -1,0 +1,4 @@
+# first() 对空数组报错
+print([].is_empty())   # expect: true
+print([].first())
+# expect-error: 不能对空数组取 first()

@@ -1,0 +1,20 @@
+# 没有 return 或 return 后无值时返回 nil；return 可提前结束；可返回任意值
+fn noret() { let q = 1 }
+fn emptyret() { return }
+print(noret(), emptyret())   # expect: nil nil
+fn early(x) {
+    if x > 0 { return "正" }
+    print("只在非正时执行")
+    return "非正"
+}
+print(early(1))   # expect: 正
+print(early(-1))   # expect: 只在非正时执行
+# expect: 非正
+fn multi() => [1, "two", {three: 3}]
+print(multi())   # expect: [1, "two", {"three": 3}]
+fn loop_ret() {
+    for i in 0..100 { if i * i > 50 { return i } }
+}
+print(loop_ret())   # expect: 8
+fn ret_fn() { return fn() => "inner" }
+print(ret_fn()())   # expect: inner

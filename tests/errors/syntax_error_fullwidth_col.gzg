@@ -1,0 +1,4 @@
+# 全角符号错误的列号指向全角符号本身
+let x = 1
+print（x)
+# expect-compile-error: syntax_error_fullwidth_col.gzg:3:6:

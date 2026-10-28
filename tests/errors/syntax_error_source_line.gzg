@@ -1,0 +1,4 @@
+# 编译错误显示源码行（带行号前缀）
+let a = 1
+print(a a)
+# expect-compile-error: 3 | print(a a)

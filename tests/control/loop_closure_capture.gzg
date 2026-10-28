@@ -1,0 +1,17 @@
+# 循环变量每一轮都是新绑定，闭包捕获当轮的值
+let fs = []
+for i in 0..3 { fs.push(fn() => i) }
+print(fs.map(fn(f) => f()))   # expect: [0, 1, 2]
+let gs = []
+for x in [7, 8] { gs.push(fn() => x) }
+print(gs[0](), gs[1]())   # expect: 7 8
+let hs = []
+for i, x in ["a", "b"] { hs.push(fn() => "{i}{x}") }
+print(hs[0](), hs[1]())   # expect: 0a 1b
+let ks = []
+for i in 10..0 step -5 { ks.push(fn() => i) }
+print(ks[0](), ks[1]())   # expect: 10 5
+let ws = []
+let k = 0
+while k < 3 { let kk = k; ws.push(fn() => kk); k += 1 }
+print(ws.map(fn(f) => f()))   # expect: [0, 1, 2]

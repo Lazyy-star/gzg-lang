@@ -1,0 +1,28 @@
+# 词频统计：清洗标点、转小写、计数，按频率降序（同频按字母序）输出前 5 名
+let text = "The quick brown fox jumps over the lazy dog. The dog barks;
+the fox runs! A quick brown dog? Yes, the quick dog."
+fn clean(s) {
+    let out = []
+    for ch in s.lower() {
+        out.push(ch.is_alpha() or ch == " " or ch == "\n" ? ch : " ")
+    }
+    return out.join("")
+}
+let counts = {}
+for w in clean(text).split() {
+    counts[w] = counts.get(w, 0) + 1
+}
+print(len(counts), counts.values().sum())   # expect: 12 23
+let items = counts.items().sorted(fn(p) => p[0]).sorted(fn(p) => -p[1])
+for p in items.slice(0, 5) { print(p[0].pad_right(6) + str(p[1])) }
+# expect: the   5
+# expect: dog   4
+# expect: quick 3
+# expect: brown 2
+# expect: fox   2
+let longest = counts.keys().reduce(fn(a, b) => len(b) > len(a) ? b : a)
+print("最长的词:", longest)   # expect: 最长的词: quick
+let cn = "我 爱 你 你 爱 我 我"
+let cc = {}
+for w in cn.split(" ") { cc[w] = cc.get(w, 0) + 1 }
+print(cc)   # expect: {"我": 3, "爱": 2, "你": 2}

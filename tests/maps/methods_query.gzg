@@ -1,0 +1,7 @@
+# len / is_empty / keys / values / items / has / get（默认值，不报错）
+let m = {a: 1, b: nil}
+print(len(m), m.len(), m.is_empty(), {}.is_empty())   # expect: 2 2 false true
+print(m.keys(), m.values(), m.items())   # expect: ["a", "b"] [1, nil] [["a", 1], ["b", nil]]
+print(m.has("a"), m.has("b"), m.has("c"))   # expect: true true false
+print(m.get("a"), m.get("c"), m.get("c", 0), m.get("b", 9))   # expect: 1 nil 0 nil
+print("a" in m, "c" in m, "c" not in m)   # expect: true false true

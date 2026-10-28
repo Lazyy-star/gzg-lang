@@ -1,0 +1,14 @@
+# 多个值用逗号分隔，可以与区间混用
+fn cls(n) {
+    match n {
+        1, 2, 3 => print("小")
+        4, 5..7 => print("中")
+        "a", "b" => print("字母")
+        _ => print("其他")
+    }
+}
+cls(2)   # expect: 小
+cls(4)   # expect: 中
+cls(6)   # expect: 中
+cls(7)   # expect: 其他
+cls("b")   # expect: 字母

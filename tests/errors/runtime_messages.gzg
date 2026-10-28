@@ -1,0 +1,16 @@
+# 各种运行错误都可以被捕获，错误信息为中文字符串
+fn msg(f) {
+    try { f() } catch e { return e }
+    return "无错误"
+}
+print(msg(fn() => [1][3]))   # expect: 数组下标 3 越界（长度为 1）
+print(msg(fn() => undefined_var))   # expect: 变量 'undefined_var' 未定义
+print(msg(fn() => assert(false, "坏")))   # expect: 断言失败: 坏
+print(msg(fn() => assert_eq(1, 2)))   # expect: 断言失败: 期望 2，实际 1
+print(msg(fn() => int("abc")))   # expect: 无法把字符串 'abc' 转换为整数
+print(msg(fn() => 1 < "a"))   # expect: 不能用 '<' 比较 int 和 string
+print(msg(fn() => [].pop()))   # expect: 不能对空数组 pop
+print(msg(fn() => {a: 1}["b"]))   # expect: 字典中没有键 "b"（可以用 .get(键, 默认值) 安全读取）
+print(msg(fn() => 1(2)))   # expect: int 类型的值不能被调用
+print(msg(fn() => read_file("build/__no_such_file__.txt")))   # expect: 无法读取文件 'build/__no_such_file__.txt'
+print(msg(fn() => 1 + 1))   # expect: 无错误

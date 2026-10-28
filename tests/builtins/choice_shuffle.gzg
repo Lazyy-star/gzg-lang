@@ -1,0 +1,18 @@
+# choice 取数组中的元素；shuffle 原地打乱（元素不变）；同种子结果可复现
+let arr = [1, 2, 3, 4, 5]
+let ok = true
+for i in 0..200 { if not arr.contains(choice(arr)) { ok = false } }
+print(ok)   # expect: true
+let b = array(0..50)
+print(shuffle(b))   # expect: nil
+print(b.sorted() == array(0..50), len(b))   # expect: true 50
+seed(7)
+let x = array(0..30)
+shuffle(x)
+let c1 = choice(x)
+seed(7)
+let y = array(0..30)
+shuffle(y)
+let c2 = choice(y)
+print(x == y, c1 == c2)   # expect: true true
+print(choice(["唯一"]))   # expect: 唯一

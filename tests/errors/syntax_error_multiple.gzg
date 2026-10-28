@@ -1,0 +1,4 @@
+# 编译错误包含的提示：缺少代码块的 '}'
+fn f() {
+    print(1)
+# expect-compile-error: 代码块缺少 '}'

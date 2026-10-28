@@ -1,0 +1,23 @@
+# seed 后序列可复现；random 在 [0,1)；randint 在闭区间 [a,b] 且为整数（不写死具体随机数）
+seed(42)
+let a1 = []
+for i in 0..20 { a1.push([random(), randint(1, 6)]) }
+seed(42)
+let a2 = []
+for i in 0..20 { a2.push([random(), randint(1, 6)]) }
+print(a1 == a2)   # expect: true
+seed(43)
+let a3 = []
+for i in 0..20 { a3.push([random(), randint(1, 6)]) }
+print(a1 == a3)   # expect: false
+let ok = true
+let seen = {}
+for i in 0..2000 {
+    let r = random()
+    let n = randint(3, 5)
+    if r < 0 or r >= 1 or type(r) != "float" { ok = false }
+    if n < 3 or n > 5 or type(n) != "int" { ok = false }
+    seen[n] = true
+}
+print(ok, seen.keys().sorted())   # expect: true [3, 4, 5]
+print(randint(7, 7))   # expect: 7

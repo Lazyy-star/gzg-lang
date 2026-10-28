@@ -1,0 +1,14 @@
+# 默认值表达式每次调用时重新求值：可变默认值不在调用间共享；引用的全局变量取调用时的值
+fn g(x = []) { x.push(1); return x }
+print(g(), g(), g())   # expect: [1] [1] [1]
+fn m(d = {}) { d.n = d.get("n", 0) + 1; return d }
+print(m(), m())   # expect: {"n": 1} {"n": 1}
+let cnt = 0
+fn h(v = cnt) => v
+cnt = 5
+print(h())   # expect: 5
+let calls = 0
+fn tick() { calls += 1; return calls }
+fn uses(t = tick()) => t
+uses(); uses(); uses(100)
+print(calls)   # expect: 2

@@ -1,0 +1,4 @@
+# exit() 无参数时退出码为 0
+print("a")   # expect: a
+exit()
+print("b")

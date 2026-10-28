@@ -1,0 +1,2 @@
+# 运行器不传额外参数，args() 为空数组
+print(args(), type(args()), len(args()))   # expect: [] array 0

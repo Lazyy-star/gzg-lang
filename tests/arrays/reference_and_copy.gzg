@@ -1,0 +1,17 @@
+# 数组是引用：赋值/传参共享；copy 是浅拷贝
+let x = [1, 2]
+let y = x
+y.push(3)
+print(x, x == y)   # expect: [1, 2, 3] true
+let z = copy(x)
+z.push(4)
+print(x, z)   # expect: [1, 2, 3] [1, 2, 3, 4]
+let nested = [[1], [2]]
+let shallow = copy(nested)
+shallow[0].push(99)
+shallow.push([3])
+print(nested)   # expect: [[1, 99], [2]]
+print(shallow)   # expect: [[1, 99], [2], [3]]
+fn add_one(arr) { arr.push(1) }
+add_one(x)
+print(len(x))   # expect: 4

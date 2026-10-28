@@ -1,0 +1,20 @@
+# obj.method 不调用时得到绑定了接收者的函数，之后调用仍作用于原对象
+struct Point { x, y = 0
+    fn len() => sqrt(self.x ** 2 + self.y ** 2)
+    fn shift(d) { self.x += d }
+}
+let a = Point(3, 4)
+let f = a.len
+a.x = 0
+a.y = 3
+print(f())   # expect: 3.0
+let sh = a.shift
+sh(10)
+sh(1)
+print(a.x)   # expect: 11
+print(type(f))   # expect: function
+let ps = [Point(1), Point(2)]
+let getters = ps.map(fn(p) => p.len)
+print(getters.map(fn(g) => g()))   # expect: [1.0, 2.0]
+let bm = [3, 1, 2].sorted
+print(bm())   # expect: [1, 2, 3]

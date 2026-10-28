@@ -1,0 +1,3 @@
+# range 的步长不能为 0
+range(0, 5, 0)
+# expect-error: range() 的步长不能为 0

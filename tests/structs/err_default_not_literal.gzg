@@ -1,0 +1,5 @@
+# 字段默认值只能是字面量，不能是变量
+struct Q {
+    x = foo
+}
+# expect-compile-error: 字段默认值只能是字面量

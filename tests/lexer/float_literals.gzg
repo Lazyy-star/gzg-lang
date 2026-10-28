@@ -1,0 +1,7 @@
+# 浮点字面量：必须有小数点或指数；e/E、正负指数
+print(3.14, 1.0, 100.0)   # expect: 3.14 1.0 100.0
+print(1e3, 2.5E3, 1E+2)   # expect: 1000.0 2500.0 100.0
+print(1_000.5)   # expect: 1000.5
+print(type(1e3), type(1.0), type(10))   # expect: float float int
+print(1.5e2 == 150)   # expect: true
+print(1e-3 == 0.001)   # expect: true

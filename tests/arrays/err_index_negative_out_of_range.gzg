@@ -1,0 +1,5 @@
+# 负数下标超出长度也报越界
+let a = [1, 2]
+print(a[-2])   # expect: 1
+print(a[-3])
+# expect-error: 数组下标 -3 越界（长度为 2）

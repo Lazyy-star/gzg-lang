@@ -1,0 +1,12 @@
+# throw 可以抛出任意值，catch 得到原值
+try { throw {code: 404, msg: "未找到"} } catch e { print(e.code, e.msg, type(e)) }   # expect: 404 未找到 map
+try { throw nil } catch e { print(e) }   # expect: nil
+try { throw [1, 2] } catch e { print(e, len(e)) }   # expect: [1, 2] 2
+try { throw 3.5 } catch e { print(e + 1) }   # expect: 4.5
+struct MyErr { code, why = "" }
+try { throw MyErr(7, "坏") } catch e { print(type(e), e.code, e.why) }   # expect: MyErr 7 坏
+fn check_age(n) {
+    if n < 0 { throw "年龄不能为负数: {n}" }
+    return n
+}
+try { check_age(-3) } catch e { print(e) }   # expect: 年龄不能为负数: -3

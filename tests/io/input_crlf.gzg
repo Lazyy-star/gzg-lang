@@ -1,0 +1,5 @@
+# .in 文件使用 \r\n 换行时，input 去掉行尾的 \r\n
+let a = input()
+print(a, len(a))   # expect: ab 2
+print(input())   # expect: cd
+print(input())   # expect: nil

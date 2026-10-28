@@ -1,0 +1,5 @@
+# 字段默认值可以是各种字面量：数字（含负数）、字符串、true/false/nil、[]、{}
+struct M { m = {}, n = nil, s = "str", t = true, f = false, neg = -1, fl = 1.5, raw = 'r{x}' }
+print(M())   # expect: M(m: {}, n: nil, s: "str", t: true, f: false, neg: -1, fl: 1.5, raw: "r{x}")
+struct N { a, b = -2.5 }
+print(N(1).b)   # expect: -2.5

@@ -1,0 +1,4 @@
+# 命名参数必须在位置参数之后
+fn add(a, b) => a + b
+add(a: 1, 2)
+# expect-compile-error: 位置参数不能出现在命名参数之后

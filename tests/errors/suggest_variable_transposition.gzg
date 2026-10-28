@@ -1,0 +1,4 @@
+# [已修复] 规范第 9 节：根据编辑距离给出建议。字母换位 prnit→print、totla→total 没有建议
+# （prnt→print、cout→count 这类距离 1 的有建议）。与规范第 0 节 nmae→name 的示例同一问题。
+prnit("x")
+# expect-error: 你是不是想写 'print'？

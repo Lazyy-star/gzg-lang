@@ -1,0 +1,15 @@
+# 结构体声明与创建实例：按顺序、按字段名、使用默认值、位置与命名混用
+struct Point {
+    x                      # 必填字段
+    y = 0                  # 带默认值的字段
+    tags = []
+}
+let a = Point(3, 4)
+let b = Point(y: 2, x: 1)
+let c = Point(5)
+let d = Point(1, tags: ["x"])
+print(a)   # expect: Point(x: 3, y: 4, tags: [])
+print(b)   # expect: Point(x: 1, y: 2, tags: [])
+print(c)   # expect: Point(x: 5, y: 0, tags: [])
+print(d)   # expect: Point(x: 1, y: 0, tags: ["x"])
+print(type(a), type(Point), Point)   # expect: Point struct <struct Point>

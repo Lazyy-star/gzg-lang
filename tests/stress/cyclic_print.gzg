@@ -1,0 +1,14 @@
+# 循环引用打印为 [...] / {...}，不会无限递归
+let x = [1]
+x.push(x)
+print(x)   # expect: [1, [...]]
+let m = {a: 1}
+m.me = m
+print(m)   # expect: {"a": 1, "me": {...}}
+let a = [1]
+print([a, a])   # expect: [[1], [1]]
+let p = [1]
+let q = [p]
+p.push(q)
+print(len(str(p)) > 0, str(p).contains("[...]"))   # expect: true true
+print(len(x), x[1][1][1][0])   # expect: 2 1

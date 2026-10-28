@@ -1,0 +1,12 @@
+# 单独的标识符是绑定（匹配一切），不与同名变量比较；绑定只在分支内有效
+let LIMIT = 5
+match 7 {
+    LIMIT => print("绑定 {LIMIT}")   # expect: 绑定 7
+}
+print(LIMIT)   # expect: 5
+match [1, 2] {
+    v => print("任意值 {v}")   # expect: 任意值 [1, 2]
+}
+match 3 {
+    n => { let doubled = n * 2; print(doubled) }   # expect: 6
+}

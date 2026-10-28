@@ -1,0 +1,8 @@
+# 字典字面量的各种键：标识符键视为字符串、字符串键、int/float/bool/nil 键、(表达式) 计算键
+let m = {name: "张三", "k": 1, 2: "two", 1.5: "f", true: "t", nil: "n", (1 + 2): "three"}
+print(m)   # expect: {"name": "张三", "k": 1, 2: "two", 1.5: "f", true: "t", nil: "n", 3: "three"}
+print(m.name, m["name"], m["k"])   # expect: 张三 张三 1
+print(m[2], m[1.5], m[true], m[nil], m[3])   # expect: two f t n three
+print({"x y": 1}, {}, len(m))   # expect: {"x y": 1} {} 7
+let key = "dyn"
+print({(key): 1, key: 2})   # expect: {"dyn": 1, "key": 2}

@@ -1,0 +1,8 @@
+# pad_left / pad_right / center：补齐到 n 个字符，默认空格；已够长则不变
+print("7".pad_left(3, "0"))   # expect: 007
+print("[" + "ab".pad_right(5) + "]")   # expect: [ab   ]
+print("[" + "ab".pad_left(5) + "]")   # expect: [   ab]
+print("ab".center(6, "*"))   # expect: **ab**
+print("abcdef".pad_left(3), "abc".center(2))   # expect: abcdef abc
+print("你好".pad_left(4, "·"))   # expect: ··你好
+print(len("ab".center(5, "*")))   # expect: 5

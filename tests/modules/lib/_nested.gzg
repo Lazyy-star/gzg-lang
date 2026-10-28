@@ -1,0 +1,4 @@
+# 子目录中的模块：其中的 import 相对于本文件所在目录
+import "../_mathlib.gzg"
+print("加载 nested")
+fn nested_double_val() => LIB_VAL * 2

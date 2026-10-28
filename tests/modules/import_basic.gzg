@@ -1,0 +1,7 @@
+# import 相对路径：导入文件中的全局变量、常量、函数、结构体之后都可直接使用
+import "_mathlib.gzg"   # expect: 加载 mathlib
+print(LIB_VAL, LIB_CONST)   # expect: 42 常量
+print(lib_add(1, 2), lib_square(5))   # expect: 3 25
+let p = LibPoint()
+print(p, p.sum())   # expect: LibPoint(x: 1, y: 2) 3
+print(LibPoint(x: 10).sum())   # expect: 12

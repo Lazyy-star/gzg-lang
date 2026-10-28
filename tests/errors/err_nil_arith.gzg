@@ -1,0 +1,6 @@
+# nil 参与算术报错（常见于忘记 return）
+fn no_return(x) { x * 2 }
+let v = no_return(3)
+print(v)   # expect: nil
+print(v + 1)
+# expect-error: '+' 不支持 nil 和 int

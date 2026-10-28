@@ -1,0 +1,15 @@
+# write_file / append_file / read_file / file_exists；测试末尾删除临时文件
+let p = "build/_gzg_test_io_rw.txt"
+let win = platform() == "windows"
+write_file(p, "第一行\n")
+append_file(p, "第二行\n")
+print(file_exists(p))   # expect: true
+print(read_file(p).lines())   # expect: ["第一行", "第二行"]
+write_file(p, "覆盖")
+print(read_file(p))   # expect: 覆盖
+append_file(p, "+追加")
+print(read_file(p), len(read_file(p)))   # expect: 覆盖+追加 5
+write_file(p, "")
+print(read_file(p) == "")   # expect: true
+run(win ? "del /q build\\_gzg_test_io_rw.txt" : "rm -f {p}")
+print(file_exists(p))   # expect: false

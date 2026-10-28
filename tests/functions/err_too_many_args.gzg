@@ -1,0 +1,6 @@
+# 实参过多
+fn add(a, b) {
+    return a + b
+}
+add(1, 2, 3)
+# expect-error: 函数 add 需要 2 个参数，实际传入 3 个

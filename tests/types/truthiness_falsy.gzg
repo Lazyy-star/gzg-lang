@@ -1,0 +1,9 @@
+# 真值规则：false nil 0 0.0 "" [] {} 空区间 为假
+fn t(v) => v ? "真" : "假"
+print(t(false), t(nil), t(0), t(0.0), t(-0.0))   # expect: 假 假 假 假 假
+print(t(""), t([]), t({}), t(0..0), t(5..5), t(3..1))   # expect: 假 假 假 假 假 假
+print(bool(false), bool(nil), bool(0), bool(""), bool([]), bool({}))   # expect: false false false false false false
+if 0..0 { print("错") } else { print("空区间为假") }   # expect: 空区间为假
+let n = 0
+while [] { n += 1; break }
+print(n)   # expect: 0

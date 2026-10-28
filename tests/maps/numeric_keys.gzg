@@ -1,0 +1,10 @@
+# 整数与浮点键：1 和 1.0 按相等性视为同一个键；负数与 0 键正常
+let m = {}
+m[0] = "zero"
+m[-1] = "neg"
+m[2.5] = "f"
+print(m[0], m[-1], m[2.5])   # expect: zero neg f
+print({1: "a"} == {1.0: "a"})   # expect: true
+let counts = {}
+for x in [3, 1, 3, 3, 1] { counts[x] = counts.get(x, 0) + 1 }
+print(counts)   # expect: {3: 3, 1: 2}

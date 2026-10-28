@@ -1,0 +1,4 @@
+# 构造时参数过多
+struct Point { x, y = 0 }
+Point(1, 2, 3)
+# expect-error: 结构体 Point 只有 2 个字段，传入了 3 个参数

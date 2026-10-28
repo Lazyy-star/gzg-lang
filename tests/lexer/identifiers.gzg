@@ -1,0 +1,14 @@
+# 标识符：字母数字下划线与非 ASCII 字符，区分大小写；_ 在 match 之外是普通标识符；step 可作变量名
+let count = 1
+let Count = 2
+print(count, Count)   # expect: 1 2
+let _tmp2 = nil
+print(_tmp2)   # expect: nil
+let _ = 9
+print(_ + 1)   # expect: 10
+let 学生名单 = ["甲"]
+print(学生名单)   # expect: ["甲"]
+let step = 3
+print(step)   # expect: 3
+let a1b2_c3 = "ok"
+print(a1b2_c3)   # expect: ok

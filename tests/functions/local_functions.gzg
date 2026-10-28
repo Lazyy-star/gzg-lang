@@ -1,0 +1,20 @@
+# 函数内部可以定义局部函数，局部函数可以递归，且外部不可见
+fn outer() {
+    fn fib(n) => n < 2 ? n : fib(n - 1) + fib(n - 2)
+    fn helper(x) {
+        return x * 2
+    }
+    return helper(fib(10))
+}
+print(outer())   # expect: 110
+fn counter_demo() {
+    let total = 0
+    fn add(n) { total += n }
+    add(3)
+    add(4)
+    return total
+}
+print(counter_demo())   # expect: 7
+let ok = false
+try { fib(3) } catch e { ok = e.contains("未定义") }
+print(ok)   # expect: true

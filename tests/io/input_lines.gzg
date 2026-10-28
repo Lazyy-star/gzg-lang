@@ -1,0 +1,10 @@
+# input 逐行读取 .in 文件（不含换行符），保留行内空白；空行得到 ""；最后一行无换行也能读到
+let l1 = input()
+print("[" + l1 + "]")   # expect: [张三]
+let l2 = input()
+print("[" + l2 + "]", len(l2))   # expect: [  带空格  ] 7
+let l3 = input()
+print(l3 == "", type(l3))   # expect: true string
+let l4 = input()
+print(l4)   # expect: 最后一行无换行
+print(input())   # expect: nil

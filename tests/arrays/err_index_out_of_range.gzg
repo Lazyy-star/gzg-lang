@@ -1,0 +1,5 @@
+# 下标越界报错，错误信息含下标与长度
+let a = [1, 2, 3]
+print(a[2])   # expect: 3
+print(a[5])
+# expect-error: 数组下标 5 越界（长度为 3）

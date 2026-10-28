@@ -1,0 +1,28 @@
+# 埃拉托斯特尼筛法：求 100 以内的素数、10000 以内素数个数，并用试除法交叉验证
+fn sieve(n) {
+    let is_prime = [true] * (n + 1)
+    is_prime[0] = false
+    if n >= 1 { is_prime[1] = false }
+    let i = 2
+    while i * i <= n {
+        if is_prime[i] {
+            for j in i * i..=n step i { is_prime[j] = false }
+        }
+        i += 1
+    }
+    let out = []
+    for k, p in is_prime { if p { out.push(k) } }
+    return out
+}
+fn is_prime_slow(n) {
+    if n < 2 { return false }
+    for d in 2..n { if d * d > n { break }; if n % d == 0 { return false } }
+    return true
+}
+let ps = sieve(100)
+print(ps)   # expect: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
+print(len(ps), ps.sum())   # expect: 25 1060
+let big = sieve(10000)
+print(len(big), big.last())   # expect: 1229 9973
+let check = array(0..500).filter(is_prime_slow)
+print(check == sieve(499))   # expect: true

@@ -1,0 +1,5 @@
+# 编译错误在任何代码执行之前报告：前面合法的 print 不应产生输出；位置为 行:列
+print("不应输出")
+let y = 2
+let z = (y +
+# expect-compile-error: 这里缺少表达式

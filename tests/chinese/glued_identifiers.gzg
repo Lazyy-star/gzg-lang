@@ -1,0 +1,13 @@
+# 中文关键字与标识符粘连时整体是一个标识符：如果x、返回值、令牌 都是普通变量名
+let 如果x = 7
+print(如果x)   # expect: 7
+let 返回值 = 3
+print(返回值)   # expect: 3
+令 令牌 = "abc"
+打印(令牌)   # expect: abc
+let 真假 = "不是 true"
+print(真假)   # expect: 不是 true
+fn 函数名() => "以关键字开头的函数名"
+print(函数名())   # expect: 以关键字开头的函数名
+let 步长 = 2
+print(步长)   # expect: 2

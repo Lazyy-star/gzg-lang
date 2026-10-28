@@ -1,0 +1,18 @@
+# if / elif / else if / else；条件不需要括号，按真值规则判断
+fn grade(score) {
+    if score >= 90 {
+        return "优秀"
+    } elif score >= 60 {
+        return "及格"
+    } else {
+        return "不及格"
+    }
+}
+print(grade(95), grade(60), grade(10))   # expect: 优秀 及格 不及格
+let x = 5
+if x > 10 { print("big") } else if x > 3 { print("mid") } else { print("small") }   # expect: mid
+if x > 10 { print("big") } elif x > 6 { print("mid6") }
+print("无分支命中也正常")   # expect: 无分支命中也正常
+if (x == 5) { print("括号也可以") }   # expect: 括号也可以
+if "" { print("x") } elif [0] { print("非空数组为真") }   # expect: 非空数组为真
+if x > 0 { if x > 4 { print("嵌套") } }   # expect: 嵌套

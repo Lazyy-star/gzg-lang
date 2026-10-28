@@ -1,0 +1,5 @@
+# 读取拼错的字段时报错并给出建议
+struct P { name, age = 0 }
+let p = P("a")
+print(p.nam)
+# expect-error: P 没有字段或方法 'nam'，你是不是想写 'name'？

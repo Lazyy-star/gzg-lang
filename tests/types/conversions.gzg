@@ -1,0 +1,7 @@
+# 类型转换 int/float/str/bool
+print(int(" 42 "), int("-7"), int("+5"))   # expect: 42 -7 5
+print(int(true), int(false), int(2.99))   # expect: 1 0 2
+print(float("1.5"), float(3), float("2"))   # expect: 1.5 3.0 2.0
+print(str(1), str(1.0), str(nil), str(true), str([1, "a"]))   # expect: 1 1.0 nil true [1, "a"]
+print(type(str(12)), str(12) + "x")   # expect: string 12x
+print(bool(0), bool(0.0), bool("x"), bool([]))   # expect: false false true false

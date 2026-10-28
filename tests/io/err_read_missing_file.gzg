@@ -1,0 +1,4 @@
+# read_file 读取不存在的文件报错；file_exists 返回 false
+print(file_exists("build/_gzg_definitely_missing_"))   # expect: false
+read_file("build/_gzg_definitely_missing_")
+# expect-error: 无法读取文件 'build/_gzg_definitely_missing_'

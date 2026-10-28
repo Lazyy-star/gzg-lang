@@ -1,0 +1,3 @@
+# ord 的参数不能是空字符串
+ord("")
+# expect-error: ord() 的参数不能是空字符串

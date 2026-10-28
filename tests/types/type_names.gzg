@@ -1,0 +1,10 @@
+# type() 对每种值返回的类型名
+print(type(nil), type(true), type(false))   # expect: nil bool bool
+print(type(1), type(-1), type(1.0), type(1e3))   # expect: int int float float
+print(type(""), type("abc"), type('raw'))   # expect: string string string
+print(type([]), type({}), type(0..3), type(1..=2))   # expect: array map range range
+print(type(print), type(fn() => 1), type(len))   # expect: function function function
+struct Point { x, y }
+print(type(Point), type(Point(1, 2)))   # expect: struct Point
+fn named() { }
+print(type(named), type(named()))   # expect: function nil

@@ -1,0 +1,5 @@
+# input(prompt) 先输出提示（不换行）再读一行
+let name = input("名字: ")
+print("[" + name + "]")   # expect: 名字: [李雷]
+let age = int(input("年龄? "))
+print(age + 1)   # expect: 年龄? 19

@@ -1,0 +1,79 @@
+# 简单计算器：词法分析 + 递归下降求值（+ - * / 括号 一元负号 ^ 右结合），错误用异常报告
+fn tokenize(s) {
+    let toks = []
+    let i = 0
+    while i < len(s) {
+        let c = s[i]
+        if c.is_space() { i += 1; continue }
+        if c.is_digit() or c == "." {
+            let j = i
+            while j < len(s) and (s[j].is_digit() or s[j] == ".") { j += 1 }
+            toks.push(float(s[i:j]))
+            i = j
+            continue
+        }
+        if c in "+-*/()^" { toks.push(c); i += 1; continue }
+        throw "非法字符 '{c}'"
+    }
+    return toks
+}
+struct Parser {
+    toks, pos = 0
+    fn peek() => self.pos < len(self.toks) ? self.toks[self.pos] : nil
+    fn next() { let t = self.peek(); self.pos += 1; return t }
+    fn expr() {
+        let v = self.term()
+        while self.peek() == "+" or self.peek() == "-" {
+            v = self.next() == "+" ? v + self.term() : v - self.term()
+        }
+        return v
+    }
+    fn term() {
+        let v = self.unary()
+        while self.peek() == "*" or self.peek() == "/" {
+            if self.next() == "*" { v *= self.unary() } else {
+                let d = self.unary()
+                if d == 0 { throw "除以零" }
+                v /= d
+            }
+        }
+        return v
+    }
+    fn unary() => self.peek() == "-" ? -(self.next() and self.unary()) : self.power()
+    fn power() {
+        let b = self.atom()
+        if self.peek() == "^" { self.next(); return b ** self.unary() }
+        return b
+    }
+    fn atom() {
+        let t = self.next()
+        if t == "(" {
+            let v = self.expr()
+            if self.next() != ")" { throw "缺少 ')'" }
+            return v
+        }
+        if type(t) != "float" { throw "意外的记号 {t}" }
+        return t
+    }
+}
+fn calc(s) {
+    try {
+        let p = Parser(tokenize(s))
+        let v = p.expr()
+        if p.peek() != nil { throw "多余的记号 {p.peek()}" }
+        return v
+    } catch e { return "错误: {e}" }
+}
+for e in ["1 + 2 * 3", "(1 + 2) * 3", "-2 ^ 2", "2 ^ 3 ^ 2", "10 / 4", "1.5 * (2 - -2)", "(1 + 2", "1 / (3 - 3)", "2 $ 3", "1 2"] {
+    print(e, "=", calc(e))
+}
+# expect: 1 + 2 * 3 = 7.0
+# expect: (1 + 2) * 3 = 9.0
+# expect: -2 ^ 2 = -4.0
+# expect: 2 ^ 3 ^ 2 = 512.0
+# expect: 10 / 4 = 2.5
+# expect: 1.5 * (2 - -2) = 6.0
+# expect: (1 + 2 = 错误: 缺少 ')'
+# expect: 1 / (3 - 3) = 错误: 除以零
+# expect: 2 $ 3 = 错误: 非法字符 '$'
+# expect: 1 2 = 错误: 多余的记号 2.0

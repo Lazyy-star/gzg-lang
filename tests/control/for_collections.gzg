@@ -1,0 +1,16 @@
+# for 遍历数组、带下标遍历、字符串、range() 数组、字典
+for x in [1, 2, 3] { write(x) }
+print()   # expect: 123
+for i, x in ["a", "b"] { write(i, x, ";") }
+print()   # expect: 0a;1b;
+for ch in "你好" { write(ch, ";") }
+print()   # expect: 你;好;
+for i, ch in "你好" { write(i, ch, ";") }
+print()   # expect: 0你;1好;
+for x in range(0, 10, 4) { write(x, ";") }
+print()   # expect: 0;4;8;
+for k, v in {a: 1, b: 2} { write(k, v, ";") }
+print()   # expect: a1;b2;
+for x in [] { print("不执行") }
+for x in "" { print("不执行") }
+print("ok")   # expect: ok

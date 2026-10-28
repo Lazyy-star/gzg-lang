@@ -1,0 +1,5 @@
+# 编译错误给出 文件:行:列 与提示（实参之间缺逗号）
+let a = 1
+let b = 2
+print(a b)
+# expect-compile-error: syntax_error_line_col.gzg:4:9: 语法错误: 实参列表缺少 ')'（在 'b' 处）

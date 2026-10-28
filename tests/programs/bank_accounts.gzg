@@ -1,0 +1,49 @@
+# 银行账户模拟：结构体 + 字典 + 异常 + 闭包日志，处理一组交易并汇总
+struct Account {
+    owner
+    balance = 0
+    history = []
+    fn deposit(n) {
+        if n <= 0 { throw "存款金额必须为正: {n}" }
+        self.balance += n
+        self.history.push("+{n}")
+    }
+    fn withdraw(n) {
+        if n > self.balance { throw "{self.owner} 余额不足（余额 {self.balance}，取 {n}）" }
+        self.balance -= n
+        self.history.push("-{n}")
+    }
+    fn to_str() => "{self.owner}: {self.balance}"
+}
+let accounts = {}
+for name in ["张三", "李四"] { accounts[name] = Account(name) }
+let errors = []
+let log = fn(msg) => errors.push(msg)
+let txs = [
+    ["张三", "存", 100], ["李四", "存", 50], ["张三", "取", 30],
+    ["李四", "取", 80], ["王五", "存", 10], ["张三", "存", -5],
+    ["李四", "转", 20],
+]
+for tx in txs {
+    let [who, op, amt] = tx
+    try {
+        let acc = accounts[who]
+        match op {
+            "存" => acc.deposit(amt)
+            "取" => acc.withdraw(amt)
+            _ => throw "未知操作 {op}"
+        }
+    } catch e {
+        log(e)
+    }
+}
+for k, acc in accounts { print(acc, acc.history) }
+# expect: 张三: 70 ["+100", "-30"]
+# expect: 李四: 50 ["+50"]
+for e in errors { print("错误:", e) }
+# expect: 错误: 李四 余额不足（余额 50，取 80）
+# expect: 错误: 字典中没有键 "王五"（可以用 .get(键, 默认值) 安全读取）
+# expect: 错误: 存款金额必须为正: -5
+# expect: 错误: 未知操作 转
+let total = accounts.values().map(fn(a) => a.balance).sum()
+print("总余额", total)   # expect: 总余额 120

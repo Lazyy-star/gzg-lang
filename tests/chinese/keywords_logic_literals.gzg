@@ -1,0 +1,6 @@
+# 中文关键字：且 或 非 在 真 假 空
+打印(真, 假, 空)   # expect: true false nil
+打印(真 且 假, 真 或 假, 非 真, 非 空)   # expect: false true false true
+打印(2 在 [1, 2], "a" 在 {a: 1}, 3 非 在 [3])   # expect: true true false
+打印(空 或 "默认", 0 且 1)   # expect: 默认 0
+打印(type(真), type(空))   # expect: bool nil

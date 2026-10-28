@@ -1,0 +1,8 @@
+# [已修复] 规范第 9 节：找不到变量时根据编辑距离给出“你是不是想写”建议。
+# 实际：全局变量 cout→count 有建议；但函数内的局部变量 totl（局部有 total，距离 1）没有任何建议。
+fn f() {
+    let total = 1
+    return totl
+}
+f()
+# expect-error: 变量 'totl' 未定义，你是不是想写 'total'？

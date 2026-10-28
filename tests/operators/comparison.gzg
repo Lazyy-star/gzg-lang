@@ -1,0 +1,7 @@
+# 比较运算：数字之间、字符串之间（按码点序）
+print(1 < 2, 2 <= 2, 3 > 4, 4 >= 4)   # expect: true true false true
+print(1 == 1, 1 != 2)   # expect: true true
+print("abc" < "abd", "b" > "abc", "A" < "a", "" < "a")   # expect: true true true true
+print("abc" <= "abc", "Z" >= "a")   # expect: true false
+print("你" > "a", "a" < "b")   # expect: true true
+print(1.5 < 2, -1 > -2.5)   # expect: true true

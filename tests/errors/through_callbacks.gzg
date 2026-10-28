@@ -1,0 +1,8 @@
+# 异常穿过函数调用和内建函数的回调（map/filter/each/sort/reduce）向外传播
+try { [1, 2, 3].map(fn(x) { if x == 2 { throw "在 map 里" }; return x }) } catch e { print(e) }   # expect: 在 map 里
+try { [1, 2].filter(fn(x) => x / 0) } catch e { print("filter:", e) }   # expect: filter: 除数不能为 0
+try { [1].each(fn(x) { throw {at: "each"} }) } catch e { print(e.at) }   # expect: each
+try { [3, 1].sorted(fn(x) { throw "key" }) } catch e { print("sorted", e) }   # expect: sorted key
+try { [1, 2].reduce(fn(a, b) => a + undefined_name, 0) } catch e { print(e) }   # expect: 变量 'undefined_name' 未定义
+let after = [1, 2].map(fn(x) => x * 2)
+print(after)   # expect: [2, 4]

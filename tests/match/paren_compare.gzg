@@ -1,0 +1,17 @@
+# (变量) 与变量的值比较；模式也可以是算术表达式、常量、函数调用
+let LIMIT = 5
+const MAX = 10
+fn check(v) {
+    match v {
+        (LIMIT) => print("等于 LIMIT")
+        (MAX) => print("等于 MAX")
+        LIMIT + 1 => print("LIMIT+1")
+        _ => print("其他")
+    }
+}
+check(5)   # expect: 等于 LIMIT
+check(10)   # expect: 等于 MAX
+check(6)   # expect: LIMIT+1
+check(7)   # expect: 其他
+fn two() => 2
+match 2 { (two()) => print("调用结果"), _ => print("no") }   # expect: 调用结果

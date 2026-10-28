@@ -1,0 +1,4 @@
+# reduce 对空数组且没有初始值时报错
+print([].reduce(fn(a, b) => a + b, 0))   # expect: 0
+print([].reduce(fn(a, b) => a + b))
+# expect-error: reduce() 不能对空数组求值

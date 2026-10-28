@@ -1,0 +1,7 @@
+# 位运算优先级：| 低于 ^ 低于 & 低于移位 低于 + -；位运算高于比较
+print(1 | 2 ^ 3 & 4)   # expect: 3
+print(1 + 1 << 2)   # expect: 8
+print(1 << 1 + 1)   # expect: 4
+print(6 & 3 == 2)   # expect: true
+print(1 | 2 == 3)   # expect: true
+print(2 ^ 3 & 1)   # expect: 3

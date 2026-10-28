@@ -1,0 +1,8 @@
+# 被导入的辅助模块：定义全局变量、函数、结构体；导入时打印一行用于检测执行次数
+print("加载 mathlib")
+let LIB_VAL = 42
+const LIB_CONST = "常量"
+fn lib_add(a, b) => a + b
+fn lib_square(x) => x * x
+struct LibPoint { x = 1, y = 2
+    fn sum() => self.x + self.y }

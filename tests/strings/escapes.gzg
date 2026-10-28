@@ -1,0 +1,12 @@
+# 双引号字符串的转义序列
+print("a\tb")   # expect: a	b
+print("反斜杠\\引号\"单引号\'")   # expect: 反斜杠\引号"单引号'
+print("\{x\}")   # expect: {x}
+print("\x41\x42")   # expect: AB
+print("\u4f60\u597d")   # expect: 你好
+print("\u{1F600}", "\u{41}")   # expect: 😀 A
+print(len("\n"), len("\t"), len("\0"), len("\e"), len("\r"))   # expect: 1 1 1 1 1
+print(ord("\n"), ord("\t"), ord("\0"), ord("\e"), ord("\r"))   # expect: 10 9 0 27 13
+print("x\ny")   # expect: x
+# expect: y
+print("\xe4\xbd\xa0", len("\xe4\xbd\xa0"))   # expect: 你 1

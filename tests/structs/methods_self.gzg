@@ -1,0 +1,21 @@
+# 方法通过 self 访问和修改接收者；修改对所有引用可见
+struct Counter {
+    n = 0
+    fn inc() { self.n += 1 }
+    fn add(k) { self.n += k; return self.n }
+    fn get() => self.n
+}
+let c = Counter()
+c.inc()
+c.inc()
+print(c.get(), c.add(10))   # expect: 2 12
+let alias = c
+alias.inc()
+print(c.n)   # expect: 13
+struct Point { x, y = 0
+    fn len() => sqrt(self.x ** 2 + self.y ** 2)
+    fn scaled(k) => Point(self.x * k, self.y * k)
+}
+let p = Point(3, 4)
+print(p.len(), p.scaled(2))   # expect: 5.0 Point(x: 6, y: 8)
+print(p)   # expect: Point(x: 3, y: 4)

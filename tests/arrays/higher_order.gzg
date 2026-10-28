@@ -1,0 +1,15 @@
+# map / filter / each / reduce / any / all
+print([1, 2, 3].map(fn(x) => x * 2))   # expect: [2, 4, 6]
+print([1, 2, 3, 4].filter(fn(x) => x % 2 == 0))   # expect: [2, 4]
+[1, 2].each(fn(x) { print("each", x) })   # expect: each 1
+# expect: each 2
+print([1, 2, 3].reduce(fn(a, b) => a + b, 0))   # expect: 6
+print([1, 2, 3, 4].reduce(fn(a, b) => a * b))   # expect: 24
+print([].reduce(fn(a, b) => a + b, 5))   # expect: 5
+print(["a", "b"].reduce(fn(acc, s) => acc + s, ">"))   # expect: >ab
+print([1, 2].any(fn(x) => x > 1), [1, 2].all(fn(x) => x > 1))   # expect: true false
+print([].any(fn(x) => true), [].all(fn(x) => false))   # expect: false true
+let src = [1, 2]
+let mapped = src.map(fn(x) => x)
+mapped.push(3)
+print(src)   # expect: [1, 2]

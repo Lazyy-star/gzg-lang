@@ -1,0 +1,4 @@
+# 全角括号被拒绝并提示改用半角
+let x = 1
+print（x）
+# expect-compile-error: 不能使用全角符号 '（'，请改用半角 '('

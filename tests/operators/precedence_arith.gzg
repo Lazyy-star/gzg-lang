@@ -1,0 +1,8 @@
+# 算术优先级与结合性：* / // % 高于 + -；同级左结合
+print(1 + 2 * 3, (1 + 2) * 3)   # expect: 7 9
+print(2 * 3 % 4, 2 + 3 % 4)   # expect: 2 5
+print(100 // 10 // 3, 20 % 7 % 4)   # expect: 3 2
+print(10 - 2 - 3, 2 - 3 + 4)   # expect: 5 3
+print(-2 * 3, -(2 * 3), 2 * -3)   # expect: -6 -6 -6
+print(1 + 2 .. 5)   # expect: 3..5
+print(1 + 2 == 3 and 2 < 3)   # expect: true

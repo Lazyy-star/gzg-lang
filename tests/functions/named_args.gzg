@@ -1,0 +1,10 @@
+# 命名参数：位置参数之后按名字传，顺序任意，可跳过中间的默认参数
+fn greet(name, greeting = "你好", times = 1) {
+    return ("{greeting}, {name}! " * times).trim()
+}
+print(greet("Bob", times: 3))   # expect: 你好, Bob! 你好, Bob! 你好, Bob!
+print(greet(times: 2, name: "李雷"))   # expect: 你好, 李雷! 你好, 李雷!
+fn f(a, b = a * 2) => [a, b]
+print(f(b: 1, a: 3))   # expect: [3, 1]
+fn box(w, h = 1, d = 1) => w * h * d
+print(box(2, d: 5), box(w: 3, h: 2))   # expect: 10 6

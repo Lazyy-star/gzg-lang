@@ -1,0 +1,4 @@
+# 比较是左结合的二元运算：1 < 2 < 3 先得到 true，再比较 true < 3 报错（不是 Python 的连续比较）
+print(1 == 1 == true)   # expect: true
+print(1 < 2 < 3)
+# expect-error: 不能用 '<' 比较 bool 和 int

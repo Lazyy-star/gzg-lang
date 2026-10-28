@@ -1,0 +1,11 @@
+# 管道 |>：x |> f 即 f(x)，x |> f(a) 即 f(x, a)；匿名函数要加括号
+fn double(x) => x * 2
+fn add(x, y) => x + y
+print(5 |> double |> add(1))   # expect: 11
+print([3, 1, 2] |> (fn(a) => a.sorted()))   # expect: [1, 2, 3]
+print("abc" |> len)   # expect: 3
+print(2 |> add(3) |> double)   # expect: 10
+fn sub3(a, b, c) => a - b - c
+print(10 |> sub3(1, 2))   # expect: 7
+let r = 1 + 2 |> double
+print(r)   # expect: 6

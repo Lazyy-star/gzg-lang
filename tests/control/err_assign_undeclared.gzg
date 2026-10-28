@@ -1,0 +1,4 @@
+# 给未声明的变量赋值是运行错误
+let count = 0
+cout = 1
+# expect-error: 变量 'cout' 未定义，请先用 let 声明

@@ -1,0 +1,9 @@
+# 三元条件 ?: 右结合，可嵌套；条件按真值规则
+fn sign(x) => x > 0 ? "正" : x < 0 ? "负" : "零"
+print(sign(5), sign(-5), sign(0))   # expect: 正 负 零
+print(true ? false ? 1 : 2 : 3)   # expect: 2
+print(0 ? "a" : "b", [] ? "a" : "b", "x" ? "a" : "b")   # expect: b b a
+let n = 3
+let r = n % 2 == 0 ? "偶" : "奇"
+print(r)   # expect: 奇
+print((n > 1 ? 10 : 20) + 1)   # expect: 11

@@ -1,0 +1,4 @@
+# 拼错全局变量名时给出“你是不是想写”建议
+let count = 1
+print(cout)
+# expect-error: 变量 'cout' 未定义，你是不是想写 'count'？

@@ -1,0 +1,9 @@
+# [已修复] 规范 7.5 / 9：to_str() 内部递归调用 str()，链长 5000 时进程被 C 栈溢出直接杀死
+# （Windows 退出码 0xC00000FD，stdout/stderr 都为空）；1000 层正常。
+# 期望：正常输出，或至少给出“调用层数超过 10000 层”的运行错误（退出码 70）。
+struct R { v, next = nil
+    fn to_str() => "R(" + str(self.next) + ")"
+}
+let r = nil
+for i in 0..5000 { r = R(i, r) }
+print(len(str(r)))   # expect: 15003

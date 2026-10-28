@@ -1,0 +1,14 @@
+# 字典保持插入顺序；覆盖已有键不改变位置；删除后再插入到末尾
+let e = {}
+e.z = 1
+e["a"] = 2
+e.m = 3
+print(e, e.keys())   # expect: {"z": 1, "a": 2, "m": 3} ["z", "a", "m"]
+e.z = 100
+print(e.keys())   # expect: ["z", "a", "m"]
+e.remove("z")
+e.z = 5
+print(e)   # expect: {"a": 2, "m": 3, "z": 5}
+let n = {}
+for i in [5, 3, 9, 1] { n[i] = i * i }
+print(n.keys(), n.values())   # expect: [5, 3, 9, 1] [25, 9, 81, 1]

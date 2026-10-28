@@ -1,0 +1,5 @@
+# 调用栈第一行是 <主程序> 及出错调用所在行
+fn boom() => 1 / 0
+let ok = 1
+boom()
+# expect-error: uncaught_main_frame.gzg:4  <主程序>

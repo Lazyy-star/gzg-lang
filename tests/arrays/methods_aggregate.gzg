@@ -1,0 +1,12 @@
+# sum / min / max / unique / extend / clear / copy
+print([1, 2, 3].sum(), [].sum(), [1.5, 2].sum())   # expect: 6 0 3.5
+print([3, 1, 2].min(), [3, 1, 2].max(), ["b", "a"].max())   # expect: 1 3 b
+print([1, 2, 1, 3, 2].unique())   # expect: [1, 2, 3]
+let c = [1, 2]
+c.extend([3, 4])
+print(c)   # expect: [1, 2, 3, 4]
+let d = c.copy()
+d.push(5)
+print(c, d)   # expect: [1, 2, 3, 4] [1, 2, 3, 4, 5]
+c.clear()
+print(c, c.is_empty(), len(d))   # expect: [] true 5

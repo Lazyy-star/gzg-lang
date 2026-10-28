@@ -1,0 +1,16 @@
+# 同一个工厂函数多次调用产生互不干扰的闭包；闭包可存入结构体/字典
+fn make_stack() {
+    let items = []
+    return {
+        push: fn(x) => items.push(x),
+        pop: fn() => items.pop(),
+        size: fn() => len(items),
+    }
+}
+let s1 = make_stack()
+let s2 = make_stack()
+s1.push(1)
+s1.push(2)
+s2.push("x")
+print(s1.size(), s2.size())   # expect: 2 1
+print(s1.pop(), s2.pop(), s1.size(), s2.size())   # expect: 2 x 1 0

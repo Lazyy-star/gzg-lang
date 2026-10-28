@@ -1,0 +1,8 @@
+# in / not in：数组元素、字典键、子串、区间整数
+print(3 in [1, 2, 3], 4 in [1, 2, 3], 2.0 in [1, 2])   # expect: true false true
+print([1] in [[1], [2]])   # expect: true
+print("a" in {a: 1}, 1 in {a: 1}, "x" in {})   # expect: true false false
+print("ell" in "hello", "" in "abc", "z" in "abc")   # expect: true true false
+print(4 in 0..5, 5 in 0..5, 5 in 0..=5, -1 in 0..5)   # expect: true false true false
+print(2 not in [1], 1 not in [1], "q" not in {q: 1})   # expect: true false false
+print(not 2 in [2])   # expect: false

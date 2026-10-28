@@ -1,0 +1,4 @@
+# 使用 Python 的 append 时提示 push
+let a = [1]
+a.append(2)
+# expect-error: array 类型没有方法 'append'，你是不是想写 'push'？

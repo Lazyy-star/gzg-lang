@@ -1,0 +1,3 @@
+#!/usr/bin/env gzg
+# 文件开头的 #! 行被当作注释忽略
+print("shebang ok")   # expect: shebang ok

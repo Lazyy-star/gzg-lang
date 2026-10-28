@@ -1,0 +1,3 @@
+# 导入的文件有语法错误时报错
+import "_broken.gzg"
+# expect-error: 导入的文件 '_broken.gzg' 有语法错误

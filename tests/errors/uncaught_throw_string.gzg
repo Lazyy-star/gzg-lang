@@ -1,0 +1,4 @@
+# 未捕获的 throw 字符串：退出码 70，stderr 显示“运行错误: ”加抛出的值
+print("前面的输出照常")   # expect: 前面的输出照常
+throw "自定义错误"
+# expect-error: 运行错误: 自定义错误

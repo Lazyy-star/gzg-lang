@@ -1,0 +1,18 @@
+# 块作用域：{ } 引入新作用域，内层可遮蔽外层；顶层允许重复 let
+{
+    let inner = 1
+    print(inner)   # expect: 1
+}
+let shadow = "out"
+if true { let shadow = "in"; print(shadow) }   # expect: in
+print(shadow)   # expect: out
+for i in 0..1 { let shadow = "loop"; print(shadow) }   # expect: loop
+print(shadow)   # expect: out
+let g = 1
+let g = 2
+print(g)   # expect: 2
+let u
+print(u)   # expect: nil
+let x = 1
+{ x = 5 }
+print(x)   # expect: 5

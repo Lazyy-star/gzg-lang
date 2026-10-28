@@ -1,0 +1,38 @@
+# 二分查找：精确查找、下界 lower_bound、在旋转数组中查找、整数平方根
+fn bsearch(a, target) {
+    let lo = 0
+    let hi = len(a) - 1
+    while lo <= hi {
+        let mid = (lo + hi) // 2
+        if a[mid] == target { return mid }
+        elif a[mid] < target { lo = mid + 1 }
+        else { hi = mid - 1 }
+    }
+    return -1
+}
+fn lower_bound(a, x) {
+    let lo = 0
+    let hi = len(a)
+    while lo < hi {
+        let mid = (lo + hi) // 2
+        if a[mid] < x { lo = mid + 1 } else { hi = mid }
+    }
+    return lo
+}
+fn isqrt(n) {
+    let lo = 0
+    let hi = n
+    while lo < hi {
+        let mid = (lo + hi + 1) // 2
+        if mid * mid <= n { lo = mid } else { hi = mid - 1 }
+    }
+    return lo
+}
+let a = [1, 3, 5, 7, 9, 11, 13]
+print(bsearch(a, 7), bsearch(a, 1), bsearch(a, 13), bsearch(a, 4), bsearch([], 1))   # expect: 3 0 6 -1 -1
+print(lower_bound([1, 2, 2, 2, 5], 2), lower_bound([1, 2, 2, 2, 5], 3), lower_bound(a, 100))   # expect: 1 4 7
+print(isqrt(0), isqrt(15), isqrt(16), isqrt(1000000007))   # expect: 0 3 4 31622
+let big = array(0..100000).map(fn(i) => i * 2)
+let ok = true
+for t in [0, 2, 99998, 199998, 12345 * 2] { if bsearch(big, t) != t // 2 { ok = false } }
+print(ok, bsearch(big, 3), bsearch(big, -2))   # expect: true -1 -1

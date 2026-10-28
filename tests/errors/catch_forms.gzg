@@ -1,0 +1,8 @@
+# catch e / catch (e) / 省略变量名；catch 变量只在 catch 块内，遮蔽外层同名变量
+try { throw "abc" } catch (e) { print(e) }   # expect: abc
+try { throw 42 } catch { print("无变量") }   # expect: 无变量
+try { throw 1 } catch () { print("空括号") }   # expect: 空括号
+let msg = "outer"
+try { throw "inner" } catch msg { print(msg) }   # expect: inner
+print(msg)   # expect: outer
+try { throw "x" } catch 错误 { print("中文变量名", 错误) }   # expect: 中文变量名 x

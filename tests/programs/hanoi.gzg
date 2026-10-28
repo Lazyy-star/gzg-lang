@@ -1,0 +1,34 @@
+# 汉诺塔：递归输出 3 层的移动步骤，并验证 n 层的步数为 2^n - 1，用三根柱子的模拟检查合法性
+fn hanoi(n, from, to, via, moves) {
+    if n == 0 { return }
+    hanoi(n - 1, from, via, to, moves)
+    moves.push([n, from, to])
+    hanoi(n - 1, via, to, from, moves)
+}
+let moves = []
+hanoi(3, "A", "C", "B", moves)
+for m in moves { print("盘 {m[0]}: {m[1]} -> {m[2]}") }
+# expect: 盘 1: A -> C
+# expect: 盘 2: A -> B
+# expect: 盘 1: C -> B
+# expect: 盘 3: A -> C
+# expect: 盘 1: B -> A
+# expect: 盘 2: B -> C
+# expect: 盘 1: A -> C
+fn simulate(n) {
+    let pegs = {A: array(1..=n).sorted(fn(x) => -x), B: [], C: []}
+    let ms = []
+    hanoi(n, "A", "C", "B", ms)
+    for m in ms {
+        let disk = pegs[m[1]].pop()
+        assert_eq(disk, m[0])
+        let target = pegs[m[2]]
+        if len(target) > 0 { assert(target.last() > disk, "大盘不能压小盘") }
+        target.push(disk)
+    }
+    return [len(ms), pegs.C == array(1..=n).sorted(fn(x) => -x)]
+}
+for n in [1, 5, 10] { print(n, simulate(n), 2 ** n - 1) }
+# expect: 1 [1, true] 1
+# expect: 5 [31, true] 31
+# expect: 10 [1023, true] 1023

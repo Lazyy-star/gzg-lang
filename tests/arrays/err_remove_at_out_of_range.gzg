@@ -1,0 +1,4 @@
+# remove_at 下标越界报错
+let a = [1]
+a.remove_at(5)
+# expect-error: remove_at() 的下标 5 越界

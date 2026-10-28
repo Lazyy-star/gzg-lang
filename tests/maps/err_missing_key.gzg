@@ -1,0 +1,5 @@
+# 用下标读取不存在的键报错，并提示使用 get
+let m = {a: 1}
+print(m.get("b", 0))   # expect: 0
+print(m["b"])
+# expect-error: 字典中没有键 "b"

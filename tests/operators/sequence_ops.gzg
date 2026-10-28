@@ -1,0 +1,8 @@
+# + 和 * 用于字符串与数组：拼接和重复
+print("ab" + "cd", "ab" * 3)   # expect: abcd ababab
+print([1] + [2], [0] * 3, [1, 2] * 2)   # expect: [1, 2] [0, 0, 0] [1, 2, 1, 2]
+print("x" * 0 + "|", [] * 5)   # expect: | []
+let a = [1]
+let b = a + [2]
+b.push(3)
+print(a, b)   # expect: [1] [1, 2, 3]

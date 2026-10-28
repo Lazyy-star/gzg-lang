@@ -1,0 +1,4 @@
+# 字符串上调用不存在的方法，给出拼写建议
+let s = "abc"
+s.uper()
+# expect-error: string 类型没有方法 'uper'，你是不是想写 'upper'？

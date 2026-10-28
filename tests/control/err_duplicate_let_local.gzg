@@ -1,0 +1,6 @@
+# 同一（非全局）作用域内重复 let 是编译错误
+fn f() {
+    let a = 1
+    let a = 2
+}
+# expect-compile-error: 变量 'a' 已在当前作用域中声明过

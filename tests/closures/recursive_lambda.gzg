@@ -1,0 +1,13 @@
+# 闭包通过捕获的变量引用自己实现递归；闭包捕获全局函数
+let fact = nil
+fact = fn(n) => n <= 1 ? 1 : n * fact(n - 1)
+print(fact(10))   # expect: 3628800
+fn outer() {
+    let walk = nil
+    walk = fn(t) {
+        if type(t) != "array" { return t }
+        return t.map(walk).sum()
+    }
+    return walk([1, [2, 3], [[4]]])
+}
+print(outer())   # expect: 10

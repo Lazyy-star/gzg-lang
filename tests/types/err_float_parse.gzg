@@ -1,0 +1,4 @@
+# float() 无法解析的字符串报错
+print(float(" 2.5 "))   # expect: 2.5
+float("abc")
+# expect-error: 无法把字符串 'abc' 转换为浮点数

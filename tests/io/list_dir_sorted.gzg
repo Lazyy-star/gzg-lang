@@ -1,0 +1,11 @@
+# list_dir 返回目录下文件名数组（已排序）；在 build/ 下建临时目录，最后清理
+let d = "build/_gzg_test_listdir"
+let win = platform() == "windows"
+run(win ? "mkdir build\\_gzg_test_listdir" : "mkdir -p {d}")
+write_file(d + "/c.txt", "C")
+write_file(d + "/a.txt", "A")
+write_file(d + "/b.gzg", "B")
+print(list_dir(d))   # expect: ["a.txt", "b.gzg", "c.txt"]
+print(read_file(d + "/a.txt") + read_file(d + "/c.txt"))   # expect: AC
+run(win ? "rmdir /s /q build\\_gzg_test_listdir" : "rm -rf {d}")
+print(file_exists(d))   # expect: false

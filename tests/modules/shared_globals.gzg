@@ -1,0 +1,6 @@
+# 所有文件共享同一个全局命名空间：模块可读写导入方先定义的全局变量
+let SHARED = 10
+import "_uses_main_global.gzg"   # expect: 模块看到 10
+print(SHARED, read_shared())   # expect: 11 11
+SHARED = 50
+print(read_shared())   # expect: 50

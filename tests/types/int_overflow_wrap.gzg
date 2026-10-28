@@ -1,0 +1,12 @@
+# 64 位整数溢出按补码回绕
+print(9223372036854775807 + 1)   # expect: -9223372036854775808
+print(9223372036854775807 + 1 == INT_MIN)   # expect: true
+print(INT_MAX, INT_MIN)   # expect: 9223372036854775807 -9223372036854775808
+print(INT_MIN - 1)   # expect: 9223372036854775807
+print(INT_MAX * 2)   # expect: -2
+print(INT_MAX + INT_MAX)   # expect: -2
+print(-INT_MIN)   # expect: -9223372036854775808
+print(10 ** 19)   # expect: -8446744073709551616
+let x = INT_MAX
+x += 1
+print(x == INT_MIN)   # expect: true

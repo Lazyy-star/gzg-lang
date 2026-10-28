@@ -1,0 +1,11 @@
+# 同类型实例逐字段深比较；不同类型实例即使字段相同也不等
+struct P { x, y = 0, tags = [] }
+struct Q { x, y = 0, tags = [] }
+print(P(1, 2) == P(1, 2), P(1, 2) == P(1, 3))   # expect: true false
+print(P(1) == P(1, 0, []), P(1, tags: [1]) == P(1, tags: [1]))   # expect: true true
+print(P(1) == Q(1), P(1) != Q(1))   # expect: false true
+let a = P(1)
+let b = a
+b.x = 5
+print(a == b)   # expect: true
+print([P(1)] == [P(1)])   # expect: true

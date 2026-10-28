@@ -1,0 +1,11 @@
+# 在函数深处和 try 中调用 exit 也立即结束（不被 catch 捕获）
+fn deep(n) {
+    if n == 0 {
+        try { exit(5) } catch e { print("不应捕获 exit") }
+    }
+    deep(n - 1)
+}
+print("开始")   # expect: 开始
+deep(10)
+print("不会执行")
+# expect-exit: 5

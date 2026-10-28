@@ -1,0 +1,3 @@
+# assert_eq 失败信息：期望 <expected>，实际 <actual>（带 msg）
+assert_eq([1, 2], [1, 3], "列表比较")
+# expect-error: 期望 [1, 3]，实际 [1, 2]

@@ -1,0 +1,3 @@
+# assert 没有 msg 时报“断言失败”
+assert(0)
+# expect-error: 断言失败

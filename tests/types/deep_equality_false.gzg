@@ -1,0 +1,9 @@
+# [已修复] 规范 2.2：== 是深比较，数组按元素逐个比较。
+# 实际：嵌套超过约 200 层的两个结构完全相同的数组 == 返回 false（不报错，静默给出错误结果）；
+# 字典同样（255 层即为 false）。assert_eq 也因此误报失败。
+fn chain(n) { let x = 0; for i in 0..n { x = [x] }; return x }
+print(chain(200) == chain(200))   # expect: true
+print(chain(201) == chain(201))   # expect: true
+print(chain(1000) == chain(1000))   # expect: true
+fn mchain(n) { let x = 0; for i in 0..n { x = {k: x} }; return x }
+print(mchain(300) == mchain(300))   # expect: true

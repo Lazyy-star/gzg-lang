@@ -1,0 +1,4 @@
+# 读取和修改导入方定义的全局变量（全局命名空间共享）
+print("模块看到", SHARED)
+SHARED = SHARED + 1
+fn read_shared() => SHARED

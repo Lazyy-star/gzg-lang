@@ -1,0 +1,14 @@
+# => 单表达式函数体、匿名函数、多行匿名函数、立即调用
+fn square(x) => x * x
+let cube = fn(x) => x * x * x
+let hello = fn() {
+    return "hello"
+}
+print(square(3), cube(2), hello())   # expect: 9 8 hello
+print((fn(a, b) => a - b)(10, 3))   # expect: 7
+let noargs = fn() => 42
+print(noargs())   # expect: 42
+fn many(a, b, c,) => a + b + c
+print(many(1, 2, 3,))   # expect: 6
+let nested = fn(x) => fn(y) => x + y
+print(nested(1)(2))   # expect: 3

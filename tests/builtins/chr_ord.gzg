@@ -1,0 +1,7 @@
+# chr / ord：码点与字符互转，支持中文和 emoji
+print(chr(65), chr(20320), chr(0x1F600))   # expect: A 你 😀
+print(ord("A"), ord("你"), ord("😀"))   # expect: 65 20320 128512
+print(chr(ord("a") + 1))   # expect: b
+let s = ""
+for c in "abc" { s += chr(ord(c) - 32) }
+print(s)   # expect: ABC

@@ -1,0 +1,14 @@
+# try/catch 捕获运行错误，得到错误信息字符串；没有异常时 catch 不执行；之后程序继续
+try { let x = 1 / 0 } catch e { print("捕获:", e, type(e)) }   # expect: 捕获: 除数不能为 0 string
+try { print("无异常") } catch e { print("不会") }   # expect: 无异常
+let caught = false
+try { throw "x" } catch e { caught = true }
+print(caught)   # expect: true
+try {
+    print("步骤1")   # expect: 步骤1
+    let a = [1][5]
+    print("不会执行")
+} catch e {
+    print("步骤2")   # expect: 步骤2
+}
+print("继续执行")   # expect: 继续执行

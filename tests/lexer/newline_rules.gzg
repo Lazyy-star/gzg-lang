@@ -1,0 +1,38 @@
+# 换行规则：括号内换行忽略；行尾二元运算符/逗号续行；} 后换行写 else/elif/catch
+let arr = [
+    1,
+    2,
+    3
+]
+print(arr)   # expect: [1, 2, 3]
+print(
+    "参数",
+    "折行"
+)   # expect: 参数 折行
+let s = 1 +
+    2 *
+    3
+print(s)   # expect: 7
+let t = true and
+    false
+print(t)   # expect: false
+let m = {
+    x: 1,
+    y: 2,
+}
+print(m)   # expect: {"x": 1, "y": 2}
+let v = 2
+if v == 1 {
+    print("one")
+}
+elif v == 2 {
+    print("two")   # expect: two
+}
+else {
+    print("other")
+}
+try { throw 1 }
+catch e { print("catch 换行") }   # expect: catch 换行
+let x = 3
+print(x
+)   # expect: 3

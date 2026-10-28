@@ -1,0 +1,16 @@
+# 成员用逗号或换行分隔，字段和方法可按任意顺序出现；方法可以调用其他方法
+struct Rect {
+    fn area() => self.w * self.h
+    w
+    fn describe() => "{self.w}x{self.h}={self.area()}"
+    h = 1
+}
+let r = Rect(3, 4)
+print(r.describe())   # expect: 3x4=12
+print(Rect(5))   # expect: Rect(w: 5, h: 1)
+struct S { a, fn bump() { self.a += 1 }, b = 2 }
+let s = S(1)
+s.bump()
+print(s)   # expect: S(a: 2, b: 2)
+struct Empty { }
+print(Empty(), type(Empty()))   # expect: Empty() Empty

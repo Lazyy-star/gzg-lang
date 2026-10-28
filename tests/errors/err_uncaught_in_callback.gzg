@@ -1,0 +1,7 @@
+# 回调中抛出的未捕获异常终止程序，退出码 70
+let r = [1, 2].map(fn(x) {
+    if x == 2 { throw "回调中失败" }
+    return x
+})
+print("不会执行")
+# expect-error: 运行错误: 回调中失败

@@ -1,0 +1,4 @@
+# 构造时缺少必填字段
+struct Point { x, y }
+Point(1)
+# expect-error: 创建 Point 时缺少字段 'y'

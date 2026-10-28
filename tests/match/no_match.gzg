@@ -1,0 +1,10 @@
+# 语句形式没有分支匹配时什么都不做（不报错）；表达式形式结果为 nil
+match 3 {
+    10 => print("x")
+    "3" => print("字符串 3 不等于整数 3")
+}
+print("无匹配不报错")   # expect: 无匹配不报错
+let r = match 1 { 2 => "two" }
+print(r)   # expect: nil
+let e = match "z" { "a"..="c" => 1, 5 => 2 }
+print(e)   # expect: nil

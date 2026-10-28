@@ -1,0 +1,12 @@
+# 典型的读到 EOF 为止的循环：input() 在输入结束时返回 nil
+let total = 0
+let n = 0
+while true {
+    let line = input()
+    if line == nil { break }
+    if line.trim() == "" { continue }
+    total += int(line)
+    n += 1
+}
+print(n, total)   # expect: 4 100
+print(input(), input())   # expect: nil nil

@@ -1,0 +1,20 @@
+# 分支体可以是单条语句或代码块；分支之间可以用换行、逗号或分号分隔
+match 2 { 1 => { print("block1") }, 2 => { print("block2"); print("more") } }   # expect: block2
+# expect: more
+match 1 { 1 => print("分号分隔"); 2 => print("x") }   # expect: 分号分隔
+fn f(x) {
+    match x {
+        1 => return "one"
+        _ => {
+            let y = x * 10
+            return "big {y}"
+        }
+    }
+}
+print(f(1), f(3))   # expect: one big 30
+let hits = 0
+match 5 {
+    5 => hits += 1
+    5 => hits += 100
+}
+print(hits)   # expect: 1

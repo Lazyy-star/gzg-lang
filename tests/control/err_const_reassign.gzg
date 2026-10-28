@@ -1,0 +1,4 @@
+# 给常量重新赋值是编译错误
+const C = 1
+C = 2
+# expect-compile-error: 不能给常量 'C' 重新赋值

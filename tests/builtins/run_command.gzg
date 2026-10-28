@@ -1,0 +1,4 @@
+# run(cmd) 返回 {code, output}
+let r = run("echo hello")
+print(type(r), r.code, r.output.trim())   # expect: map 0 hello
+print(run("exit 3").code)   # expect: 3

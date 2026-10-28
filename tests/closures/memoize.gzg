@@ -1,0 +1,22 @@
+# 闭包实现记忆化：捕获一个字典作为缓存
+fn memoize(f) {
+    let cache = {}
+    let calls = [0]
+    let wrapped = fn(n) {
+        if not cache.has(n) { calls[0] += 1; cache[n] = f(n) }
+        return cache[n]
+    }
+    return [wrapped, calls]
+}
+let [sq, calls] = memoize(fn(n) => n * n)
+print(sq(4), sq(4), sq(5), sq(4))   # expect: 16 16 25 16
+print(calls[0])   # expect: 2
+let memo = {}
+fn fib(n) {
+    if n < 2 { return n }
+    if memo.has(n) { return memo[n] }
+    let r = fib(n - 1) + fib(n - 2)
+    memo[n] = r
+    return r
+}
+print(fib(90))   # expect: 2880067194370816120

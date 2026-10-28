@@ -1,0 +1,3 @@
+# 循环导入的另一方
+import "_cycle_a.gzg"
+print("执行 b")

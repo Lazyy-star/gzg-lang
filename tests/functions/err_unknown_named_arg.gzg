@@ -1,0 +1,4 @@
+# 传入不存在的参数名报错并给出拼写建议
+fn add(alpha, beta) => alpha + beta
+add(1, bta: 2)
+# expect-error: 函数 add 没有名为 'bta' 的参数，你是不是想写 'beta'？

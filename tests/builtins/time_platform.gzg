@@ -1,0 +1,8 @@
+# clock / time / sleep / platform：只断言类型与单调性
+let t0 = clock()
+sleep(20)
+let t1 = clock()
+print(type(t0), t1 >= t0, t1 - t0 >= 0.01)   # expect: float true true
+print(type(time()), time() > 1600000000)   # expect: float true
+let p = platform()
+print(type(p), ["windows", "linux", "macos"].contains(p) or len(p) > 0)   # expect: string true

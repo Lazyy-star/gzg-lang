@@ -1,0 +1,14 @@
+# 字典是引用：赋值、传参、作为数组元素都共享同一对象
+let a = {n: 1}
+let b = a
+b.n = 2
+print(a.n)   # expect: 2
+fn bump(m) { m.n += 10 }
+bump(a)
+print(b.n)   # expect: 12
+let list = [a, a]
+list[0].n = 0
+print(list[1].n, a == list[1])   # expect: 0 true
+let c = copy(a)
+c.n = 5
+print(a.n, c.n, a == c)   # expect: 0 5 false

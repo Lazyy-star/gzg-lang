@@ -1,0 +1,7 @@
+# 方法名拼错时给出建议
+struct P { name
+    fn greet() => "hi {self.name}" }
+let p = P("a")
+print(p.greet())   # expect: hi a
+p.gret()
+# expect-error: P 没有字段或方法 'gret'，你是不是想写 'greet'？

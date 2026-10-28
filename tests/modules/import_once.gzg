@@ -1,0 +1,7 @@
+# 重复导入只执行一次（包括 ./ 前缀和从子模块间接导入同一文件）
+import "_mathlib.gzg"   # expect: 加载 mathlib
+import "_mathlib.gzg"
+import "./_mathlib.gzg"
+import "lib/_nested.gzg"   # expect: 加载 nested
+print(nested_double_val())   # expect: 84
+print("end")   # expect: end

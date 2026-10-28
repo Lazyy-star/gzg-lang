@@ -1,0 +1,5 @@
+# exit(n) 立即结束程序，退出码为 n；之前的输出保留
+print("退出前")   # expect: 退出前
+exit(3)
+print("不会执行")
+# expect-exit: 3

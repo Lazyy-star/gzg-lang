@@ -1,0 +1,9 @@
+# 区间值：len、下标（含负数）、contains、to_array、in；空区间
+let r = 0..5
+print(type(r), len(r), r.len())   # expect: range 5 5
+print(r[0], r[2], r[-1])   # expect: 0 2 4
+print(r.contains(3), r.contains(5), (1..=5).contains(5))   # expect: true false true
+print(r.to_array(), (5..0).to_array(), len(5..0))   # expect: [0, 1, 2, 3, 4] [] 0
+print(len(0..=5), (2..=4).to_array())   # expect: 6 [2, 3, 4]
+print(0..5)   # expect: 0..5
+print(0..2 == 0..2)   # expect: true

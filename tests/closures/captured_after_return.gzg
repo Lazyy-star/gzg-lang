@@ -1,0 +1,13 @@
+# 外层函数返回后，被捕获的变量仍然存活；捕获参数
+fn make_multiplier(k) => fn(x) => x * k
+let double = make_multiplier(2)
+let triple = make_multiplier(3)
+print(double(5), triple(5))   # expect: 10 15
+fn make_acc(start) {
+    return fn(n) { start += n; return start }
+}
+let acc = make_acc(100)
+acc(10)
+print(acc(1))   # expect: 111
+let fs = [1, 2, 3].map(fn(k) => fn(x) => x + k)
+print(fs.map(fn(f) => f(10)))   # expect: [11, 12, 13]

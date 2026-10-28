@@ -1,0 +1,4 @@
+# 方法名拼错时给出建议
+let s = "x"
+s.uppr()
+# expect-error: string 类型没有方法 'uppr'，你是不是想写 'upper'？

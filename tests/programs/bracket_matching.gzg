@@ -1,0 +1,27 @@
+# 括号匹配：用栈检查 () [] {}，报告第一个错误的位置（花括号放在单引号原始字符串中，避免被当作插值）
+const PAIRS = {')': '(', ']': '[', '}': '{'}
+fn check(s) {
+    let stack = []
+    for i, ch in s {
+        if ch in '([{' {
+            stack.push([ch, i])
+        } elif ch in PAIRS {
+            if stack.is_empty() { return "位置 {i} 多余的 '{ch}'" }
+            let top = stack.pop()
+            if top[0] != PAIRS[ch] { return "位置 {i} 的 '{ch}' 与位置 {top[1]} 的 '{top[0]}' 不匹配" }
+        }
+    }
+    if not stack.is_empty() { return "位置 {stack.last()[1]} 的 '{stack.last()[0]}' 没有闭合" }
+    return "匹配"
+}
+let cases = ["", "()", '([]{})', 'fn(a[1]) { x }', "(]", "(()", "())", '{[()()]}', "中文(括号]"]
+for c in cases { print("'{c}':", check(c)) }
+# expect: '': 匹配
+# expect: '()': 匹配
+# expect: '([]{})': 匹配
+# expect: 'fn(a[1]) { x }': 匹配
+# expect: '(]': 位置 1 的 ']' 与位置 0 的 '(' 不匹配
+# expect: '(()': 位置 0 的 '(' 没有闭合
+# expect: '())': 位置 2 多余的 ')'
+# expect: '{[()()]}': 匹配
+# expect: '中文(括号]': 位置 5 的 ']' 与位置 2 的 '(' 不匹配

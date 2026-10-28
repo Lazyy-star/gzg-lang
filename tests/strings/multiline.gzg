@@ -1,0 +1,9 @@
+# 字符串可以跨行书写，换行被保留；行尾 \ 表示续行，不保留换行
+print("多行
+字符串")   # expect: 多行
+# expect: 字符串
+print("续行\
+继续")   # expect: 续行继续
+let s = "a
+b"
+print(len(s), s.lines())   # expect: 3 ["a", "b"]

@@ -1,0 +1,5 @@
+# 对空数组 pop 报错
+let a = [1]
+print(a.pop())   # expect: 1
+a.pop()
+# expect-error: 不能对空数组 pop

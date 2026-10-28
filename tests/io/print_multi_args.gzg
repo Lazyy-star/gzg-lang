@@ -1,0 +1,6 @@
+# print 多参数：各参数转字符串后用空格连接，末尾换行；无参数只输出换行
+print("a", 1, nil, [1, "s"], {k: "v"}, 1.0, true)   # expect: a 1 nil [1, "s"] {"k": "v"} 1.0 true
+print("单个")   # expect: 单个
+print()   # expect: 
+print("上面是空行")   # expect: 上面是空行
+print("尾")   # expect: 尾

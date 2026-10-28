@@ -1,0 +1,16 @@
+# 递归与相互递归；函数可以引用之后才定义的全局函数
+fn fact(n) => n <= 1 ? 1 : n * fact(n - 1)
+print(fact(0), fact(5), fact(20))   # expect: 1 120 2432902008176640000
+fn fib(n) {
+    if n < 2 { return n }
+    return fib(n - 1) + fib(n - 2)
+}
+print(fib(20))   # expect: 6765
+fn is_even(n) => n == 0 ? true : is_odd(n - 1)
+fn is_odd(n) => n == 0 ? false : is_even(n - 1)
+print(is_even(10), is_odd(7), is_even(3))   # expect: true true false
+fn later() => early()
+fn early() => "early"
+print(later())   # expect: early
+fn gcd(a, b) => b == 0 ? a : gcd(b, a % b)
+print(gcd(48, 18))   # expect: 6

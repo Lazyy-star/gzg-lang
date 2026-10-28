@@ -1,0 +1,10 @@
+# 闭包计数器：每次调用 make_counter 得到独立的状态
+fn make_counter() {
+    let n = 0
+    return fn() { n += 1; return n }
+}
+let c = make_counter()
+c(); c()
+print(c())   # expect: 3
+let d = make_counter()
+print(d(), c())   # expect: 1 4

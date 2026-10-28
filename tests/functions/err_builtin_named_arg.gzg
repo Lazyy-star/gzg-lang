@@ -1,0 +1,4 @@
+# 内建函数不支持命名参数
+print(len("ab"))   # expect: 2
+len(x: "ab")
+# expect-error: 内建函数不支持命名参数

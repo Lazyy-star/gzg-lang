@@ -1,0 +1,6 @@
+# 函数值的类型与显示
+fn fact(n) => n
+print(type(fact), type(print), type(fn() => 1))   # expect: function function function
+print(fact)   # expect: <fn fact>
+print(print)   # expect: <builtin print>
+print(fn(x) => x)   # expect: <fn 匿名函数>

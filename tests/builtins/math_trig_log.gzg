@@ -1,0 +1,8 @@
+# 三角函数、exp、log（自然对数与指定底数）与常量 PI / E
+print(PI, E)   # expect: 3.141592653589793 2.718281828459045
+print(sin(0), cos(0), tan(0))   # expect: 0.0 1.0 0.0
+print(atan2(1, 1) == PI / 4, atan2(0, -1) == PI)   # expect: true true
+print(exp(0), log(E), log(1))   # expect: 1.0 1.0 0.0
+print(log(8, 2), log(100, 10))   # expect: 3.0 2.0
+print(abs(sin(PI)) < 1e-12, abs(cos(PI) + 1) < 1e-12)   # expect: true true
+print(abs(exp(1) - E) < 1e-12)   # expect: true

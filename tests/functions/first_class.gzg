@@ -1,0 +1,14 @@
+# 函数是一等值：存入变量、数组、字典，作为参数和返回值
+let fns = [fn(x) => x + 1, fn(x) => x * 2]
+print(fns[1](fns[0](3)))   # expect: 8
+let ops = {add: fn(a, b) => a + b, mul: fn(a, b) => a * b}
+print(ops.add(2, 3), ops["mul"](4, 5))   # expect: 5 20
+fn compose(f1, f2) => fn(x) => f2(f1(x))
+print(compose(fn(x) => x + 1, fn(x) => x * 10)(2))   # expect: 30
+fn apply_twice(f, x) => f(f(x))
+print(apply_twice(fn(s) => s + "!", "hi"))   # expect: hi!!
+let p = print
+p("别名调用")   # expect: 别名调用
+fn square(x) => x * x
+let sq = square
+print(sq(7), [1, 2, 3].map(square))   # expect: 49 [1, 4, 9]

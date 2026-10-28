@@ -1,0 +1,5 @@
+# 结构体是封闭的：给未声明的字段赋值报错
+struct Point { x, y = 0 }
+let p = Point(1)
+p.z = 1
+# expect-error: Point 没有字段 'z'（结构体的字段在定义时确定）

@@ -1,0 +1,19 @@
+# 大量函数调用、闭包调用和循环迭代后结果仍正确（检查栈/帧没有泄漏）
+fn add(a, b) => a + b
+let s = 0
+for i in 0..300000 { s = add(s, i) }
+print(s)   # expect: 44999850000
+let inc = fn(x) => x + 1
+let v = 0
+let i = 0
+while i < 200000 { v = inc(v); i += 1 }
+print(v)   # expect: 200000
+let caught = 0
+for k in 0..20000 {
+    try { if k % 2 == 0 { throw k } } catch e { caught += 1 }
+}
+print(caught)   # expect: 10000
+fn ret_in_loop() { for j in 0..10 { if j == 3 { return j } } }
+let t = 0
+for k in 0..50000 { t += ret_in_loop() }
+print(t)   # expect: 150000

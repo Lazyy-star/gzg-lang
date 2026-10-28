@@ -1,0 +1,17 @@
+# 大量临时字符串触发 GC：保留下来的字符串内容仍然正确
+let keep = []
+for i in 0..50000 {
+    let t = "item{i}-" + str(i * 2)
+    let junk = t.upper().lower().replace("-", "_")
+    if i % 10000 == 0 { keep.push(junk) }
+}
+print(keep)   # expect: ["item0_0", "item10000_20000", "item20000_40000", "item30000_60000", "item40000_80000"]
+let s = ""
+for i in 0..3000 { s += "ab" }
+print(len(s), s[0:4], s[-2:])   # expect: 6000 abab ab
+let parts = []
+for i in 0..30000 { parts.push(str(i)) }
+let joined = parts.join("")
+print(len(joined), joined[0:10], joined[-5:])   # expect: 138890 0123456789 29999
+let words = ("x y z " * 20000).split()
+print(len(words), words[59999])   # expect: 60000 z

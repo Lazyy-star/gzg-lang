@@ -1,0 +1,7 @@
+# 单引号原始字符串：不转义、不插值
+let x = 5
+print('raw \n {x} \t')   # expect: raw \n {x} \t
+print(len('\n'))   # expect: 2
+print('单引号里 "双引号" 和 \ 反斜杠')   # expect: 单引号里 "双引号" 和 \ 反斜杠
+print("双引号里 'single'")   # expect: 双引号里 'single'
+print('a' + "b", 'x' == "x")   # expect: ab true

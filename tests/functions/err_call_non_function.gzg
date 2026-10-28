@@ -1,0 +1,4 @@
+# 变量覆盖了内建函数名后再调用：int 类型的值不能被调用
+let len = 3
+len("x")
+# expect-error: int 类型的值不能被调用

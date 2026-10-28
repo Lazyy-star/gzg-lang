@@ -1,0 +1,29 @@
+# try 块中使用 return、break、continue 是安全的，之后的 try 仍正常工作
+fn tr() {
+    try { return "from try" } catch e { return "c" }
+    return "after"
+}
+print(tr())   # expect: from try
+fn find_first(arr) {
+    for i in 0..len(arr) {
+        try {
+            if arr[i] > 2 { return i }
+        } catch e { }
+    }
+    return -1
+}
+print(find_first([1, 5, 9]))   # expect: 1
+for i in 0..5 {
+    try {
+        if i == 1 { continue }
+        if i == 3 { break }
+        write(i)
+    } catch e { }
+}
+print()   # expect: 02
+try { throw "仍能捕获" } catch e { print(e) }   # expect: 仍能捕获
+fn deep_ret() {
+    try { try { return "两层 try 内 return" } catch e { } } catch e { }
+}
+print(deep_ret())   # expect: 两层 try 内 return
+try { throw "最后" } catch e { print(e) }   # expect: 最后

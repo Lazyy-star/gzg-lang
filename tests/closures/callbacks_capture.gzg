@@ -1,0 +1,13 @@
+# 传给内建高阶方法的闭包可以读写外层变量
+let total = 0
+[1, 2, 3].each(fn(x) { total += x })
+print(total)   # expect: 6
+let threshold = 2
+print([1, 2, 3, 4].filter(fn(x) => x > threshold))   # expect: [3, 4]
+let seen = []
+let r = [3, 1, 2].sorted(fn(x) { seen.push(x); return x })
+print(r, len(seen) >= 3)   # expect: [1, 2, 3] true
+let log = []
+fn run_all(fs) { for f in fs { f() } }
+run_all([fn() => log.push("a"), fn() => log.push("b")])
+print(log)   # expect: ["a", "b"]

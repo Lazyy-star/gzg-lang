@@ -1,0 +1,3 @@
+# last() 对空数组报错
+print([].last())
+# expect-error: 不能对空数组取 last()

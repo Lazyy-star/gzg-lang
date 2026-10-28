@@ -1,0 +1,15 @@
+# 字符串区间模式 "a"..="z"
+fn letter(c) {
+    match c {
+        "a"..="z" => print("小写"),
+        "A"..="Z" => print("大写"),
+        "0".."9" => print("0 到 8"),
+        _ => print("其他")
+    }
+}
+letter("q")   # expect: 小写
+letter("z")   # expect: 小写
+letter("Q")   # expect: 大写
+letter("5")   # expect: 0 到 8
+letter("9")   # expect: 其他
+letter("!")   # expect: 其他

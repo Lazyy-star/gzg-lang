@@ -1,0 +1,3 @@
+# assert_eq 失败信息：断言失败: 期望 <expected>，实际 <actual>
+assert_eq(1 + 1, 3)
+# expect-error: 断言失败: 期望 3，实际 2

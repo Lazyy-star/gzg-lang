@@ -15,7 +15,7 @@ SRC     = $(wildcard src/*.c)
 
 ifeq ($(OS),Windows_NT)
   EXE    = build/gzg.exe
-  LDLIBS += -lshell32
+  LDLIBS += -lshell32 -Wl,--stack,67108864   # 64MB C 栈：深层回调递归（map 中递归等）不至于栈溢出
   PYTHON ?= py -3
 else
   EXE    = build/gzg

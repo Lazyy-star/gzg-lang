@@ -940,6 +940,7 @@ static void lambda(bool canAssign) {
     (void)canAssign;
     ObjString* name = pendingName;
     pendingName = NULL;
+    if (name == NULL) name = copyString("匿名函数", (int)strlen("匿名函数"));   /* 调用栈里显示为“匿名函数” */
     function(TYPE_LAMBDA, name);
 }
 

@@ -1,0 +1,15 @@
+# 嵌套 try：内层处理或重新抛出；外层捕获重新抛出的值
+try {
+    try { throw "inner" } catch e { throw "re:" + e }
+} catch e { print(e) }   # expect: re:inner
+try {
+    try { throw "a" } catch e { print("内层处理", e) }   # expect: 内层处理 a
+    print("内层之后")   # expect: 内层之后
+} catch e { print("外层不会执行") }
+fn level3() { throw "深层" }
+fn level2() { try { level3() } catch e { throw "{e}→2" } }
+fn level1() { try { level2() } catch e { throw "{e}→1" } }
+try { level1() } catch e { print(e) }   # expect: 深层→2→1
+try {
+    try { throw "x" } catch e { let y = 1 / 0 }
+} catch e { print("catch 块中的错误也会传播:", e) }   # expect: catch 块中的错误也会传播: 除数不能为 0

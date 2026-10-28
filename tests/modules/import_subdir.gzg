@@ -1,0 +1,4 @@
+# 导入子目录中的模块；子模块用 ../ 再导入上一级模块
+import "lib/_nested.gzg"   # expect: 加载 mathlib
+# expect: 加载 nested
+print(nested_double_val(), lib_add(LIB_VAL, 1))   # expect: 84 43

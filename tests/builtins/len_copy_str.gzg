@@ -1,0 +1,10 @@
+# len（字符串/数组/字典/区间）、copy（数组/字典浅拷贝，其他原样返回）、str 与 print 显示一致
+print(len("你好"), len([1]), len({a: 1}), len(0..4), len(""))   # expect: 2 1 1 4 0
+print(copy(5), copy("s"), copy(nil))   # expect: 5 s nil
+let m = {a: [1]}
+let c = copy(m)
+c.b = 2
+c.a.push(2)
+print(m, c)   # expect: {"a": [1, 2]} {"a": [1, 2], "b": 2}
+print(str([1, "a", nil]), str({k: 1.0}))   # expect: [1, "a", nil] {"k": 1.0}
+print(str("plain") == "plain", str(-0.5))   # expect: true -0.5

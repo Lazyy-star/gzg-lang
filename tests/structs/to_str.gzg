@@ -1,0 +1,10 @@
+# 自定义 to_str()：print / str() / 插值 / 容器内显示都调用它
+struct V { x, y
+    fn to_str() => "<{self.x},{self.y}>"
+}
+let v = V(1, 2)
+print(v)   # expect: <1,2>
+print(str(v), "v={v}")   # expect: <1,2> v=<1,2>
+print([v, V(3, 4)])   # expect: [<1,2>, <3,4>]
+print({k: v})   # expect: {"k": <1,2>}
+print(str(v) + "!")   # expect: <1,2>!

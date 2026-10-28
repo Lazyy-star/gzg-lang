@@ -1,0 +1,22 @@
+# 在 match 分支和 try 块中使用 break / continue
+for i in 0..5 {
+    match i {
+        1 => continue
+        3 => break
+        _ => write(i)
+    }
+}
+print()   # expect: 02
+for i in 0..5 {
+    try {
+        if i == 1 { continue }
+        if i == 3 { break }
+        write(i)
+    } catch e { }
+}
+print()   # expect: 02
+let n = 0
+while true {
+    try { n += 1; if n == 4 { break } } catch e { }
+}
+print(n)   # expect: 4

@@ -1,0 +1,4 @@
+# if 后的代码块花括号不能省略（Python 风格的冒号报错）
+let x = 1
+if x: print(1)
+# expect-compile-error: 这里需要 '{'

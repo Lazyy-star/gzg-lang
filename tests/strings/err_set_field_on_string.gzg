@@ -1,0 +1,4 @@
+# 字符串不能设置字段
+let s = "abc"
+s.x = 1
+# expect-error: 不能给 string 类型的值设置字段 'x'

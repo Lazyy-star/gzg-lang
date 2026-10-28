@@ -1,0 +1,6 @@
+# to_str() 必须返回字符串
+struct U { v
+    fn to_str() => 5
+}
+print(U(1))
+# expect-error: U.to_str() 必须返回字符串

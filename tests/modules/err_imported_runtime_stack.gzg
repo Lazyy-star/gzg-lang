@@ -1,0 +1,4 @@
+# 导入文件中的函数出错时，调用栈指向被导入文件的行
+import "_boom.gzg"
+boom()
+# expect-error: _boom.gzg:3  boom

@@ -1,0 +1,6 @@
+# 块内声明的变量在块外不可见
+{
+    let q = 1
+}
+print(q)
+# expect-error: 变量 'q' 未定义

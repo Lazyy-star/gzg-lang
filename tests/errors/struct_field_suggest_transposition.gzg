@@ -1,0 +1,6 @@
+# [已修复] 规范第 0 节原文示例：p.nmae → `Point 没有字段或方法 'nmae'，你是不是想写 'name'？`
+# 实际：只输出“Point 没有字段或方法 'nmae'”，没有建议（字母换位的编辑距离为 2，实现似乎只建议距离 1 的候选）
+struct Point { name, x = 0 }
+let p = Point("a")
+print(p.nmae)
+# expect-error: Point 没有字段或方法 'nmae'，你是不是想写 'name'？

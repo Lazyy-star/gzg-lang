@@ -1,0 +1,4 @@
+# 字典方法名拼错时给出建议
+let m = {a: 1}
+m.kes()
+# expect-error: map 类型没有方法 'kes'，你是不是想写 'keys'？

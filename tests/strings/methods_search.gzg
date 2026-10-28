@@ -1,0 +1,8 @@
+# find（字符下标）/ count / contains / starts_with / ends_with / replace（替换全部）
+print("hello".find("l"), "hello".find("z"), "你好你好".find("好"))   # expect: 2 -1 1
+print("aaa".count("a"), "aaaa".count("aa"), "abc".count("z"))   # expect: 3 2 0
+print("abc".contains("b"), "abc".contains("d"))   # expect: true false
+print("abc".starts_with("ab"), "abc".ends_with("bc"), "abc".starts_with("c"))   # expect: true true false
+print("aXbXc".replace("X", "--"), "abc".replace("z", "y"))   # expect: a--b--c abc
+print("你好世界".replace("世界", "GZG"))   # expect: 你好GZG
+print("中文abc".find("abc"))   # expect: 2

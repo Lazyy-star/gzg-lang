@@ -1,0 +1,5 @@
+# self 不能被重新赋值
+struct Q { v
+    fn f() { self = 1 }
+}
+# expect-compile-error: 赋值目标无效

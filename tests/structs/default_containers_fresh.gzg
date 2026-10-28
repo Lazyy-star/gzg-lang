@@ -1,0 +1,11 @@
+# [] 和 {} 默认值在每次创建实例时都是新的空容器，不共享
+struct Bag { items = [], meta = {} }
+let a = Bag()
+let b = Bag()
+a.items.push(1)
+a.meta.k = "v"
+print(a)   # expect: Bag(items: [1], meta: {"k": "v"})
+print(b)   # expect: Bag(items: [], meta: {})
+let bags = []
+for i in 0..3 { let g = Bag(); g.items.push(i); bags.push(g) }
+print(bags.map(fn(g) => g.items))   # expect: [[0], [1], [2]]

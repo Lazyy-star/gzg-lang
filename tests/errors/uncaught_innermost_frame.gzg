@@ -1,0 +1,8 @@
+# 调用栈最后一行是出错的函数及其行号
+fn inner() {
+    let x = nil
+    return x + 1
+}
+fn outer() => inner()
+outer()
+# expect-error: uncaught_innermost_frame.gzg:4  inner

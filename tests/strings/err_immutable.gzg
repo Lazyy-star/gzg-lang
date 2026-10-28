@@ -1,0 +1,5 @@
+# 字符串不可修改：下标赋值报错
+let s = "abc"
+print(s[0])   # expect: a
+s[0] = "x"
+# expect-error: 字符串不可修改

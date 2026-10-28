@@ -1,0 +1,9 @@
+# 整数字面量：十进制、十六进制、二进制、八进制，大小写前缀，_ 分隔符
+print(42, -7, 0)   # expect: 42 -7 0
+print(1_000_000)   # expect: 1000000
+print(0xff, 0xFF, 0XfF)   # expect: 255 255 255
+print(0b1010, 0B11)   # expect: 10 3
+print(0o17, 0O7)   # expect: 15 7
+print(0xFF_FF, 0b1111_0000, 0o7_7)   # expect: 65535 240 63
+print(9223372036854775807)   # expect: 9223372036854775807
+print(type(0x10))   # expect: int

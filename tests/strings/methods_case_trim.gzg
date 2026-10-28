@@ -1,0 +1,9 @@
+# upper/lower 只转换 ASCII；trim/trim_start/trim_end 去空白；方法返回新串、原串不变
+let s = "HeLLo 你"
+print(s.upper(), s.lower())   # expect: HELLO 你 hello 你
+print(s)   # expect: HeLLo 你
+print("[" + "  x  ".trim() + "]")   # expect: [x]
+print("[" + "  x  ".trim_start() + "]")   # expect: [x  ]
+print("[" + "  x  ".trim_end() + "]")   # expect: [  x]
+print("[" + "\t\n x \r\n".trim() + "]")   # expect: [x]
+print("[" + "".trim() + "]")   # expect: []

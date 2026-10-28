@@ -1,0 +1,3 @@
+# 字符串加数字报错
+let s = "分数" + 90
+# expect-error: 不能把 string 和 int 相加

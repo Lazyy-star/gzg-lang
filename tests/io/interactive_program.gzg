@@ -1,0 +1,19 @@
+# 交互式命令循环：读取命令直到 quit 或 EOF
+let stack = []
+while true {
+    let line = input("> ")
+    if line == nil or line == "quit" { break }
+    let parts = line.split()
+    match parts[0] {
+        "push" => stack.push(int(parts[1]))
+        "pop" => print(stack.pop())
+        "sum" => print(stack.sum())
+        _ => print("未知命令 {parts[0]}")
+    }
+}
+print("结束", stack)
+# expect: > > > 2
+# expect: > > 未知命令 bad
+# expect: > 1
+# expect: > 0
+# expect: > 结束 [1]

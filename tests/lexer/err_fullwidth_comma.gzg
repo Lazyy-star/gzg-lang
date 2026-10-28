@@ -1,0 +1,3 @@
+# 全角逗号被拒绝
+let a = [1，2]
+# expect-compile-error: 不能使用全角符号 '，'

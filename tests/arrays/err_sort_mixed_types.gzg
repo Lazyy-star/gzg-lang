@@ -1,0 +1,4 @@
+# 混合类型无法排序
+print([2, 1].sorted())   # expect: [1, 2]
+print([1, "a"].sorted())
+# expect-error: 无法比较

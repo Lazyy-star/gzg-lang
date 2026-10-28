@@ -1,0 +1,3 @@
+# assert 失败信息：断言失败: msg
+assert(1 == 2, "一不等于二")
+# expect-error: 断言失败: 一不等于二

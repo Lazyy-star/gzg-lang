@@ -1,0 +1,16 @@
+# set / remove（返回值，不存在返回 nil）/ merge（原地，覆盖同名键）/ clear / copy（浅拷贝）
+let e = {a: 1}
+print(e.set("q", 9))   # expect: nil
+print(e)   # expect: {"a": 1, "q": 9}
+print(e.remove("a"), e.remove("nope"), e)   # expect: 1 nil {"q": 9}
+e.merge({q: 100, w: 5})
+print(e)   # expect: {"q": 100, "w": 5}
+let c = e.copy()
+c.q = -1
+print(e.q, c.q)   # expect: 100 -1
+let inner = {list: [1]}
+let c2 = copy(inner)
+c2.list.push(2)
+print(inner)   # expect: {"list": [1, 2]}
+c.clear()
+print(c, e.len())   # expect: {} 2

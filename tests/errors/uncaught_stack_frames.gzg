@@ -1,0 +1,9 @@
+# 调用栈逐层列出 文件:行 和函数名，最内层的 f 在最后
+fn f() {
+    return 1 // 0
+}
+fn g() {
+    return f()
+}
+g()
+# expect-error: uncaught_stack_frames.gzg:6  g

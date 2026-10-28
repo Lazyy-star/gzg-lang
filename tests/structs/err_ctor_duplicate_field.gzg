@@ -1,0 +1,4 @@
+# 构造时同一字段既按位置又按名字传入
+struct Point { x, y = 0 }
+Point(1, x: 2)
+# expect-error: 字段 'x' 被重复赋值

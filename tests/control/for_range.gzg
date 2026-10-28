@@ -1,0 +1,18 @@
+# for 遍历区间：a..b 左闭右开，a..=b 闭区间；a >= b 时不执行
+for i in 0..5 { write(i) }
+print()   # expect: 01234
+for i in 1..=5 { write(i) }
+print()   # expect: 12345
+for i in 5..0 { write(i) }
+print("|")   # expect: |
+for i in 3..=3 { write(i) }
+print()   # expect: 3
+for i in -2..2 { write(i, ",") }
+print()   # expect: -2,-1,0,1,
+let r = 0..3
+for x in r { write(x) }
+print()   # expect: 012
+let lo = 2
+let hi = 4
+for i in lo..hi + 1 { write(i) }
+print()   # expect: 234

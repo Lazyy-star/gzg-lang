@@ -1,0 +1,3 @@
+# 一行两条语句未用 ; 分隔
+let x = 1 let y = 2
+# expect-compile-error: 语句后面多了内容（一行写多条语句请用 ';' 分隔）

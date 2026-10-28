@@ -1,0 +1,13 @@
+# 遍历字典：for k 得到键，for k, v 得到键值，按插入顺序；items 返回 [[k, v], ...]
+let m = {x: 1, y: 2, z: 3}
+for k in m { write(k) }
+print()   # expect: xyz
+for k, v in m { write(k, "=", v, ";") }
+print()   # expect: x=1;y=2;z=3;
+for pair in m.items() { write(pair[0], pair[1]) }
+print()   # expect: x1y2z3
+let total = 0
+for v in m.values() { total += v }
+print(total)   # expect: 6
+for k in {} { print("不会执行") }
+print("空字典遍历结束")   # expect: 空字典遍历结束

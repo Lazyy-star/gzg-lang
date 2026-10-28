@@ -1,0 +1,5 @@
+# 实参过少
+fn add(a, b) => a + b
+print(add(1, 2))   # expect: 3
+add(1)
+# expect-error: 函数 add 需要 2 个参数，实际传入 1 个

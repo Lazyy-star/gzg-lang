@@ -1,0 +1,18 @@
+# 字面量模式（用 == 比较）：整数、字符串、nil、bool、数组；不贯穿
+fn what(v) {
+    match v {
+        0 => print("零")
+        "hi" => print("字符串")
+        nil => print("空")
+        true => print("真")
+        [1, 2] => print("数组")
+        _ => print("其他")
+    }
+}
+what(0)   # expect: 零
+what("hi")   # expect: 字符串
+what(nil)   # expect: 空
+what(true)   # expect: 真
+what([1, 2])   # expect: 数组
+what(0.0)   # expect: 零
+what(false)   # expect: 其他

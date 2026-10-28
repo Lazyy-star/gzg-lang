@@ -1,0 +1,25 @@
+# break / continue 只作用于最内层循环
+for i in 0..3 {
+    for j in 0..3 {
+        if j == 1 { continue }
+        if i == 2 { break }
+        write(i, j, ";")
+    }
+}
+print()   # expect: 00;02;10;12;
+let found = nil
+for i in 1..10 {
+    let hit = false
+    for j in 1..10 {
+        if i * j == 42 { hit = true; break }
+    }
+    if hit { found = i; break }
+}
+print(found)   # expect: 6
+let i = 0
+let out = []
+while i < 3 {
+    i += 1
+    for j in 0..5 { if j >= i { break }; out.push(j) }
+}
+print(out)   # expect: [0, 0, 1, 0, 1, 2]

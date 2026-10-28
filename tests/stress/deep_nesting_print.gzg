@@ -1,0 +1,17 @@
+# 深层嵌套的数组/字典打印与比较（60 层；超过 64 层的打印截断问题见 _pending/_deep_nesting_print_truncated.gzg）
+let nested = [[[[[[[[[[1]]]]]]]]]]
+print(nested)   # expect: [[[[[[[[[[1]]]]]]]]]]
+let x = 0
+for i in 0..60 { x = [x] }
+let s = str(x)
+print(len(s), s[0:3], s[-3:])   # expect: 121 [[[ ]]]
+let d = {}
+let cur = d
+for i in 0..20 { cur.k = {}; cur = cur.k }
+print(len(str(d)))   # expect: 142
+let mixed = {a: [1, {b: [2, {c: [3, {d: "深"}]}]}]}
+print(mixed)   # expect: {"a": [1, {"b": [2, {"c": [3, {"d": "深"}]}]}]}
+print(mixed.a[1].b[1].c[1].d)   # expect: 深
+let y = 0
+for i in 0..60 { y = [y] }
+print(x == y)   # expect: true

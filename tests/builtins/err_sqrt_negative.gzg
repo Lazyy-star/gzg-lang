@@ -1,0 +1,4 @@
+# sqrt 负数报错
+print(sqrt(0))   # expect: 0.0
+sqrt(-1)
+# expect-error: sqrt() 的参数不能是负数

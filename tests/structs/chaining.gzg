@@ -1,0 +1,20 @@
+# 方法返回 self 实现链式调用（也可以换行以 . 开头续行）
+struct Point {
+    x, y = 0
+    fn move(dx, dy) {
+        self.x += dx
+        self.y += dy
+        return self
+    }
+}
+let a = Point(3, 4)
+a.move(1, 1).move(2, 2)
+print(a.x, a.y)   # expect: 6 7
+let b = Point(0)
+    .move(1, 0)
+    .move(0, 5)
+print(b)   # expect: Point(x: 1, y: 5)
+struct Builder { parts = []
+    fn add(p) { self.parts.push(p); return self }
+    fn build() => self.parts.join("-") }
+print(Builder().add("a").add("b").add("c").build())   # expect: a-b-c

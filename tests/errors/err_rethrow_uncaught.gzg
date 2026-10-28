@@ -1,0 +1,8 @@
+# catch 中重新抛出而外层没有 try：程序终止
+try {
+    throw "原始"
+} catch e {
+    print("记录:", e)   # expect: 记录: 原始
+    throw e
+}
+# expect-error: 运行错误: 原始

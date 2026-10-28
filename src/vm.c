@@ -237,14 +237,24 @@ static void printTraceback(void) {
 static bool callValue(Value callee, int argCount);
 
 /* 栈上已有 [槽0 实参...]，调用 callee 并运行到返回；成功时结果写入 *result 且栈恢复原状 */
+static int nativeDepth = 0;   /* 原生函数回调 GZG 函数的嵌套层数（每层都会递归进入 run()，占用 C 栈） */
+#define NATIVE_DEPTH_MAX 20000
+
 static bool callAndRun(Value callee, int argc, Value* result) {
     Value* base = vm.stackTop - argc - 1;
     int frameBefore = vm.frameCount;
+    if (nativeDepth >= NATIVE_DEPTH_MAX) {
+        vm.stackTop = base;
+        return vmError("回调嵌套超过 %d 层（是不是无限递归？）", NATIVE_DEPTH_MAX);
+    }
     if (!callValue(callee, argc)) {
         vm.stackTop = base;
         return false;
     }
-    if (vm.frameCount > frameBefore && run(frameBefore) != INTERPRET_OK) {
+    nativeDepth++;
+    bool ok = vm.frameCount <= frameBefore || run(frameBefore) == INTERPRET_OK;
+    nativeDepth--;
+    if (!ok) {
         vm.stackTop = base;
         return false;
     }
@@ -302,7 +312,8 @@ static void sbQuoted(StrBuf* sb, ObjString* s) {
     sbPut(sb, "\"", 1);
 }
 
-static Obj* printing[64];   /* 正在打印的容器，用于检测循环引用 */
+#define PRINT_DEPTH_MAX 4096
+static Obj* printing[PRINT_DEPTH_MAX];   /* 正在打印的容器，用于检测循环引用 */
 static int printingCount = 0;
 
 static bool stringifyInto(StrBuf* sb, Value v, bool quoted) {
@@ -327,8 +338,8 @@ static bool stringifyInto(StrBuf* sb, Value v, bool quoted) {
                 sbStr(sb, o->type == OBJ_ARRAY ? "[...]" : "{...}");
                 return true;
             }
-        if (printingCount >= 64) {
-            sbStr(sb, "...");
+        if (printingCount >= PRINT_DEPTH_MAX) {
+            sbStr(sb, "<嵌套过深>");
             return true;
         }
     }

@@ -1,0 +1,15 @@
+# while 循环、break、continue；条件按真值规则
+let i = 0
+while i < 3 {
+    i += 1
+}
+print(i)   # expect: 3
+let n = 0
+while true { n += 1; if n > 5 { break }; if n % 2 == 0 { continue }; write(n) }
+print()   # expect: 135
+let stack = [1, 2, 3]
+while stack { write(stack.pop()) }
+print()   # expect: 321
+let k = 10
+while k < 3 { print("不执行") }
+print("done")   # expect: done

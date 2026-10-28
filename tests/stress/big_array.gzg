@@ -1,0 +1,17 @@
+# 10 万元素数组：push、下标、sum、map/filter、sort、切片、拼接
+let a = []
+for i in 0..100000 { a.push(i) }
+print(len(a), a[99999], a[-1], a.sum())   # expect: 100000 99999 99999 4999950000
+let b = a.map(fn(x) => x * 2).filter(fn(x) => x % 3 == 0)
+print(len(b), b[-1])   # expect: 33334 199998
+let r = a.sorted(fn(x) => -x)
+print(r[0], r[99999], a[0])   # expect: 99999 0 0
+seed(1)
+let shuffled = copy(a)
+shuffle(shuffled)
+shuffled.sort()
+print(shuffled == a)   # expect: true
+print(len(a[50000:]), len(a + a), len([0] * 100000))   # expect: 50000 200000 100000
+let m = {}
+for i in 0..100000 { m[i] = i }
+print(len(m), m[77777])   # expect: 100000 77777

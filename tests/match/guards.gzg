@@ -1,0 +1,20 @@
+# 守卫 if：守卫为假时继续尝试下一个分支；守卫可用于值模式和通配
+fn cls(n) {
+    match n {
+        0 if false => print("不会命中")
+        0 => print("零")
+        x if x < 0 => print("负数 {x}")
+        _ if n > 100 => print("很大")
+        x if x % 2 == 0 => print("偶数 {x}")
+        _ => print("奇数")
+    }
+}
+cls(0)   # expect: 零
+cls(-3)   # expect: 负数 -3
+cls(500)   # expect: 很大
+cls(8)   # expect: 偶数 8
+cls(7)   # expect: 奇数
+match "hi" {
+    "hi" if false => print("guard false")
+    s if s == "hi" => print("bound {s}")   # expect: bound hi
+}

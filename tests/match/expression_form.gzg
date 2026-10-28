@@ -1,0 +1,18 @@
+# match 作为表达式：每个分支体是表达式；可用 _ if 条件 代替绑定
+fn grade(score) => match score {
+    90..=100 => "A",
+    80..90 => "B",
+    _ => "C"
+}
+print(grade(95), grade(85), grade(10))   # expect: A B C
+let t = match 4 { _ if 4 > 3 => "大", _ => "小" }
+print(t)   # expect: 大
+let n = 0
+let s = match n {
+    0 => "零"
+    1, 2 => "小"
+    _ => "多"
+}
+print(s)   # expect: 零
+print("{match 2 { 1 => "one", 2 => "two", _ => "?" }}")   # expect: two
+print([1, 2, 3].map(fn(x) => match x { 1 => "a", 2 => "b", _ => "c" }))   # expect: ["a", "b", "c"]

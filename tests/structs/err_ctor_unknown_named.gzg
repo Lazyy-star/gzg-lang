@@ -1,0 +1,4 @@
+# 构造时命名参数写错字段名，给出建议
+struct Point { x, y = 0, name = "" }
+Point(1, nam: "p")
+# expect-error: 结构体 Point 没有字段 'nam'，你是不是想写 'name'？

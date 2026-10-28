@@ -27,7 +27,7 @@ void freeValueArray(ValueArray* array) {
 static bool equalDepth(Value a, Value b, int depth);
 
 static bool equalDepth(Value a, Value b, int depth) {
-    if (depth > 200) return false;  /* 防止循环引用导致无限递归 */
+    if (depth > 100000) return false;  /* 防止循环引用导致无限递归 */
     if (IS_NUMBER(a) && IS_NUMBER(b)) {
         if (IS_INT(a) && IS_INT(b)) return AS_INT(a) == AS_INT(b);
         return AS_NUMBER(a) == AS_NUMBER(b);

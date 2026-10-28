@@ -1,0 +1,5 @@
+# 表达式形式的 match 不支持绑定变量
+let r = match 3 {
+    n => n * 2
+}
+# expect-compile-error: 表达式形式的 match 不支持绑定变量

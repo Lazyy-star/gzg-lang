@@ -1,0 +1,3 @@
+# 未知的转义序列是语法错误
+print("\q")
+# expect-compile-error: 未知的转义序列

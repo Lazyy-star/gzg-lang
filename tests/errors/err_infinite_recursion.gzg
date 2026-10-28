@@ -1,0 +1,5 @@
+# 无限递归报错“调用层数超过 10000 层”，可被捕获
+fn r(n) => r(n + 1)
+try { r(0) } catch e { print(e.contains("10000")) }   # expect: true
+r(0)
+# expect-error: 调用层数超过 10000 层

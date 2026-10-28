@@ -1,0 +1,43 @@
+# 矩阵乘法：结构体封装、乘法、转置、单位矩阵、快速幂求斐波那契
+struct Matrix {
+    rows
+    fn n() => len(self.rows)
+    fn m() => len(self.rows[0])
+    fn mul(other) {
+        let out = []
+        for i in 0..self.n() {
+            let row = []
+            for j in 0..other.m() {
+                let s = 0
+                for k in 0..self.m() { s += self.rows[i][k] * other.rows[k][j] }
+                row.push(s)
+            }
+            out.push(row)
+        }
+        return Matrix(out)
+    }
+    fn transpose() {
+        let out = []
+        for j in 0..self.m() { out.push(self.rows.map(fn(r) => r[j])) }
+        return Matrix(out)
+    }
+    fn identity(n) => self(array(0..n).map(fn(i) => array(0..n).map(fn(j) => i == j ? 1 : 0)))
+    fn to_str() => self.rows.map(fn(r) => r.join(" ")).join(" | ")
+}
+let a = Matrix([[1, 2, 3], [4, 5, 6]])
+let b = Matrix([[7, 8], [9, 10], [11, 12]])
+print(a.mul(b))   # expect: 58 64 | 139 154
+print(a.transpose())   # expect: 1 4 | 2 5 | 3 6
+print(Matrix.identity(3))   # expect: 1 0 0 | 0 1 0 | 0 0 1
+print(a.mul(Matrix.identity(3)) == a)   # expect: true
+fn mat_pow(m, p) {
+    let result = Matrix.identity(m.n())
+    while p > 0 {
+        if p % 2 == 1 { result = result.mul(m) }
+        m = m.mul(m)
+        p = p // 2
+    }
+    return result
+}
+let fibm = Matrix([[1, 1], [1, 0]])
+print(mat_pow(fibm, 10).rows[0][1], mat_pow(fibm, 50).rows[0][1])   # expect: 55 12586269025

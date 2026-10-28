@@ -1,0 +1,4 @@
+# 导入不存在的文件是运行错误；之前的输出照常
+print("before")   # expect: before
+import "_nope_not_exist.gzg"
+# expect-error: 无法导入文件 '_nope_not_exist.gzg'

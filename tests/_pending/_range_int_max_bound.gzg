@@ -1,0 +1,12 @@
+# [待定] 规范 4.6：a..=b 表示 [a, b]。当 b == INT_MAX 时区间被当成空区间（疑似 b + 1 溢出）
+# 实际：len(INT_MAX - 2..=INT_MAX) == 0，for 循环 0 次，contains(INT_MAX) 为 false，INT_MAX in 0..=INT_MAX 为 false
+# 另外 len(INT_MIN..INT_MAX) 为 -1（长度溢出）
+let r = INT_MAX - 2..=INT_MAX
+print(len(r))   # expect: 3
+let c = 0
+for i in INT_MAX - 2..=INT_MAX { c += 1 }
+print(c)   # expect: 3
+print(INT_MAX in 0..=INT_MAX)   # expect: true
+let d = 0
+for i in INT_MIN + 2..=INT_MIN step -1 { d += 1 }
+print(d)   # expect: 3

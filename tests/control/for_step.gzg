@@ -1,0 +1,18 @@
+# for ... step：正步长、负步长倒序、..= 与 step 组合；步长方向与区间不符时不执行
+for i in 10..0 step -2 { write(i, ",") }
+print()   # expect: 10,8,6,4,2,
+for i in 0..10 step 3 { write(i, ",") }
+print()   # expect: 0,3,6,9,
+for i in 0..=10 step 5 { write(i, ",") }
+print()   # expect: 0,5,10,
+for i in 3..=1 step -1 { write(i, ",") }
+print()   # expect: 3,2,1,
+for i in 10..=0 step -5 { write(i, ",") }
+print()   # expect: 10,5,0,
+for i in 0..10 step -1 { write(i) }
+print("|")   # expect: |
+for i in 0..3 step 5 { write(i) }
+print()   # expect: 0
+let s = 2
+for i in 0..=6 step s { write(i) }
+print()   # expect: 0246

@@ -1,0 +1,4 @@
+# Python 风格的 fn f(): 报错，提示函数体需要 { 或 =>
+fn f():
+    return 1
+# expect-compile-error: 函数体需要以 '{' 开始（或使用 '=> 表达式'）

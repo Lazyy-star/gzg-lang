@@ -1,0 +1,4 @@
+# 数组之间不能用 < 比较（只有数字和字符串可以）
+print([1] == [1])   # expect: true
+print([1] < [2])
+# expect-error: 不能用 '<' 比较

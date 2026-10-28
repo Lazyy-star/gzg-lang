@@ -1,0 +1,4 @@
+# is_digit / is_alpha / is_space：非空且每个字符都满足
+print("123".is_digit(), "".is_digit(), "12a".is_digit(), "-1".is_digit())   # expect: true false false false
+print("abc".is_alpha(), "ab1".is_alpha(), "".is_alpha())   # expect: true false false
+print(" \t\n".is_space(), "".is_space(), " a".is_space())   # expect: true false false

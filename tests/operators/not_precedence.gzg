@@ -1,0 +1,7 @@
+# not 的优先级低于比较：not a == b 等于 not (a == b)；and 高于 or
+print(not 1 == 2)   # expect: true
+print(not (1 == 1))   # expect: false
+print(true or false and false)   # expect: true
+print((true or false) and false)   # expect: false
+print(not true or true)   # expect: true
+print(not false and false)   # expect: false

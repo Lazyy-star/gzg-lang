@@ -1,0 +1,9 @@
+# 字符串长度、下标、切片均按字符（码点）计
+let s = "你好世界abc"
+print(len(s), s.len())   # expect: 7 7
+print(s[0], s[-1], s[3])   # expect: 你 c 界
+print(s[1:3], s[:2], s[5:], s[-3:])   # expect: 好世 你好 bc abc
+print("你好世界"[1:3])   # expect: 好世
+print(len("😀"), "a😀b"[1], "😀a"[0])   # expect: 1 😀 😀
+print(len(""), len("é"))   # expect: 0 1
+print(s[10:100] + "|", s[3:1] + "|", s[-100:2])   # expect: | | 你好

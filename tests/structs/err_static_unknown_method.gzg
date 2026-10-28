@@ -1,0 +1,6 @@
+# 在结构体类型上调用不存在的方法
+struct Vec { x, y
+    fn zero() => self(0, 0) }
+print(Vec.zero())   # expect: Vec(x: 0, y: 0)
+Vec.one()
+# expect-error: 结构体 Vec 没有方法 'one'

@@ -1,0 +1,16 @@
+# sort（原地，返回 nil）与 sorted（返回新数组），可带键函数，稳定排序
+let b = [3, 1, 2]
+print(b.sort(), b)   # expect: nil [1, 2, 3]
+let c = [5, 2, 8]
+let d = c.sorted()
+print(c, d)   # expect: [5, 2, 8] [2, 5, 8]
+print(["bb", "a", "ccc"].sorted(fn(s) => len(s)))   # expect: ["a", "bb", "ccc"]
+print([5, 2, 8].sorted(fn(v) => -v))   # expect: [8, 5, 2]
+print([[2, "b"], [1, "a"], [2, "a"]].sorted(fn(p) => p[0]))   # expect: [[1, "a"], [2, "b"], [2, "a"]]
+let e = ["b", "A", "a"]
+e.sort()
+print(e)   # expect: ["A", "a", "b"]
+let f = [3, -1, 2]
+f.sort(fn(x) => x * x)
+print(f)   # expect: [-1, 2, 3]
+print([1.5, 1, -2].sorted(), [].sorted())   # expect: [-2, 1, 1.5] []

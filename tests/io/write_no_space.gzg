@@ -1,0 +1,9 @@
+# write 直接拼接各参数，不加空格、不换行
+write("x", 1, "y", nil)
+write("\n")   # expect: x1ynil
+write("a", "b")
+write("c")
+print()   # expect: abc
+write()
+write([1, 2], {a: 1})
+print("|")   # expect: [1, 2]{"a": 1}|

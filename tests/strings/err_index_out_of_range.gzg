@@ -1,0 +1,4 @@
+# 字符串下标越界报错（切片不会）
+print("abc"[1:10])   # expect: bc
+print("abc"[5])
+# expect-error: 字符串下标 5 越界（长度为 3）

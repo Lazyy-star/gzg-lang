@@ -1,0 +1,18 @@
+# 解构声明 let [a, b] = 数组；const 也支持；多余元素忽略
+let [a, b, c] = [1, 2, 3]
+print(a, b, c)   # expect: 1 2 3
+let [q, r] = [17 // 5, 17 % 5]
+print(q, r)   # expect: 3 2
+const [c1, c2] = ["a", "b"]
+print(c1, c2)   # expect: a b
+let [x, y] = [1, 2, 3]
+print(x, y)   # expect: 1 2
+fn pair() => ["k", 9]
+let [k, v] = pair()
+print(k, v)   # expect: k 9
+fn swap_demo() {
+    let [p, s] = [1, 2]
+    let [s2, p2] = [p, s]
+    return [s2, p2]
+}
+print(swap_demo())   # expect: [1, 2]

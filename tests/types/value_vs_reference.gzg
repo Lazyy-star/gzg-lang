@@ -1,0 +1,26 @@
+# 值语义（数字、字符串）与引用语义（数组、字典、实例）
+let a = 1
+let b = a
+b += 1
+print(a, b)   # expect: 1 2
+let s = "x"
+let t = s
+t += "y"
+print(s, t)   # expect: x xy
+let arr = [1]
+let arr2 = arr
+arr2.push(2)
+print(arr)   # expect: [1, 2]
+let m = {}
+let m2 = m
+m2.k = 1
+print(m)   # expect: {"k": 1}
+struct C { v = 0 }
+let c = C()
+let c2 = c
+c2.v = 9
+print(c.v)   # expect: 9
+fn mutate(x) { x.push("in") }
+let p = []
+mutate(p)
+print(p)   # expect: ["in"]

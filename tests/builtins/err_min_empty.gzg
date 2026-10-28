@@ -1,0 +1,3 @@
+# min 对空数组报错
+min([])
+# expect-error: min() 的参数不能为空

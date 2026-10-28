@@ -1,0 +1,11 @@
+# 中英关键字在同一文件、同一语句中混用
+fn mixed() { 返回 "英文 fn 中文返回" }
+打印(mixed())   # expect: 英文 fn 中文返回
+if 真 and not 假 { print("混用条件") }   # expect: 混用条件
+如果 true { print("中文 if 英文 true") } else { 打印("x") }   # expect: 中文 if 英文 true
+for i 在 0..3 { write(i) }
+print()   # expect: 012
+遍历 i in 0..=6 step 3 { write(i) }
+print()   # expect: 036
+try { throw "e1" } 捕获 e { print(e) }   # expect: e1
+令 x = 1; let y = 2; 打印(x + y)   # expect: 3

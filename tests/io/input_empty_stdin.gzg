@@ -1,0 +1,3 @@
+# 标准输入为空（空的 .in 文件）时 input() 立即返回 nil
+print(input())   # expect: nil
+print(input() == nil)   # expect: true

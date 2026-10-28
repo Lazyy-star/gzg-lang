@@ -1,0 +1,5 @@
+# 整数除以 0 报错
+print("before")   # expect: before
+let x = 1 / 0
+print("不应执行")
+# expect-error: 除数不能为 0

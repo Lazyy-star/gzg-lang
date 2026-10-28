@@ -1,0 +1,40 @@
+# 快速排序：函数式写法与原地分区写法，与内建 sorted 交叉验证
+fn qsort(a) {
+    if len(a) <= 1 { return a }
+    let pivot = a[len(a) // 2]
+    let less = a.filter(fn(x) => x < pivot)
+    let equal = a.filter(fn(x) => x == pivot)
+    let greater = a.filter(fn(x) => x > pivot)
+    return qsort(less) + equal + qsort(greater)
+}
+fn qsort_inplace(a, lo = 0, hi = len(a) - 1) {
+    if lo >= hi { return }
+    let p = a[hi]
+    let i = lo
+    for j in lo..hi {
+        if a[j] < p {
+            let t = a[i]; a[i] = a[j]; a[j] = t
+            i += 1
+        }
+    }
+    let t = a[i]; a[i] = a[hi]; a[hi] = t
+    qsort_inplace(a, lo, i - 1)
+    qsort_inplace(a, i + 1, hi)
+}
+let data = [38, 27, 43, 3, 9, 82, 10, 3, -5, 0]
+print(qsort(data))   # expect: [-5, 0, 3, 3, 9, 10, 27, 38, 43, 82]
+print(data)   # expect: [38, 27, 43, 3, 9, 82, 10, 3, -5, 0]
+let b = copy(data)
+qsort_inplace(b)
+print(b)   # expect: [-5, 0, 3, 3, 9, 10, 27, 38, 43, 82]
+seed(2024)
+let ok = true
+for trial in 0..20 {
+    let arr = []
+    for i in 0..randint(0, 60) { arr.push(randint(-100, 100)) }
+    let c = copy(arr)
+    qsort_inplace(c)
+    if qsort(arr) != arr.sorted() or c != arr.sorted() { ok = false }
+}
+print("随机数据验证:", ok)   # expect: 随机数据验证: true
+print(qsort(["pear", "apple", "fig"]))   # expect: ["apple", "fig", "pear"]

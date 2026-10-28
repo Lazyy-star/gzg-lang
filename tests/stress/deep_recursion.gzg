@@ -1,0 +1,17 @@
+# 深递归 5000 层（以及接近上限的 9000 层）结果正确
+fn depth(n) => n == 0 ? 0 : 1 + depth(n - 1)
+print(depth(5000))   # expect: 5000
+fn sumto(n) {
+    if n == 0 { return 0 }
+    return n + sumto(n - 1)
+}
+print(sumto(9000))   # expect: 40504500
+fn build(n) => n == 0 ? [] : [n, build(n - 1)]
+let chain = build(3000)
+let count = 0
+let cur = chain
+while len(cur) > 0 { count += 1; cur = cur[1] }
+print(count)   # expect: 3000
+fn ping(n) => n == 0 ? "pong" : pong(n - 1)
+fn pong(n) => n == 0 ? "ping" : ping(n - 1)
+print(ping(5001))   # expect: ping

@@ -1,0 +1,3 @@
+# 无法识别的 ASCII 字符报语法错误
+let a = 1 @ 2
+# expect-compile-error: 无法识别的字符 '@'

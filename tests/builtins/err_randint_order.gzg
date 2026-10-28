@@ -1,0 +1,3 @@
+# randint(a, b) 要求 a <= b
+randint(5, 1)
+# expect-error: randint(a, b) 要求 a <= b

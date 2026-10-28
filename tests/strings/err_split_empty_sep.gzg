@@ -1,0 +1,4 @@
+# split 的分隔符不能是空串（按字符拆分请用 chars()）
+print("abc".chars())   # expect: ["a", "b", "c"]
+"abc".split("")
+# expect-error: 分隔符不能是空字符串

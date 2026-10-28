@@ -1,0 +1,4 @@
+# < 只能比较两个数字或两个字符串，其他组合报错
+print("a" < "b", 1 < 2.5)   # expect: true true
+print(1 < "a")
+# expect-error: 不能用 '<' 比较 int 和 string

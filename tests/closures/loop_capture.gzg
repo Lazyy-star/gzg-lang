@@ -1,0 +1,14 @@
+# 循环中创建的闭包：for 循环变量每轮新绑定；循环体内 let 也是每轮新绑定；循环外变量共享
+let a = []
+for i in 0..3 { a.push(fn() => i * 10) }
+print(a[0](), a[1](), a[2]())   # expect: 0 10 20
+let b = []
+for i in 0..3 { let j = i + 1; b.push(fn() => j) }
+print(b.map(fn(f) => f()))   # expect: [1, 2, 3]
+let shared = 0
+let c = []
+for i in 0..3 { shared = i; c.push(fn() => shared) }
+print(c.map(fn(f) => f()))   # expect: [2, 2, 2]
+let d = []
+for i in 0..3 { d.push(fn() { i += 100; return i }) }
+print(d[0](), d[0](), d[1]())   # expect: 100 200 101

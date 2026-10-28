@@ -60,8 +60,8 @@ struct Expect {
 fn parse_expect(source) {
     let e = Expect()
     for line in source.lines() {
-        let p = line.find("# expect: ")
-        if p >= 0 { e.lines.push(line.slice(p + 10).trim_end()); continue }
+        let p = line.find("# expect:")
+        if p >= 0 { e.lines.push(strip_one(line.slice(p + 9))); continue }
         p = line.find("# expect-error: ")
         if p >= 0 { e.error = line.slice(p + 16).trim(); e.exit_code = 70; continue }
         p = line.find("# expect-compile-error: ")
@@ -72,13 +72,17 @@ fn parse_expect(source) {
     return e
 }
 
+# "# expect: abc" 取冒号后去掉一个空格的内容；"# expect:" 表示空行
+fn strip_one(t) => t.starts_with(" ") ? t.slice(1).trim_end() : t.trim_end()
+
 fn normalize(text) {
     let out = text.replace("\r\n", "\n")
     while out.ends_with("\n") { out = out.slice(0, len(out) - 1) }
     return out
 }
 
-let stderr_file = "build/test_stderr.txt"
+# 每次运行用独立的 stderr 文件，多个运行器并行时互不干扰
+let stderr_file = "build/test_stderr_{int(time() * 1000) % 100000000}_{int(clock() * 1000000) % 1000}.txt"
 
 fn run_one(path) {
     let e = parse_expect(read_file(path))
@@ -132,6 +136,7 @@ for dir, c in per_dir {
     print("  {mark} {dir.pad_right(12)} {c[0]}/{c[1]}")
 }
 let elapsed = fmt(clock() - t0, 2)
+if file_exists(stderr_file) { run(platform() == "windows" ? "del \"{native_path(stderr_file)}\"" : "rm -f \"{stderr_file}\"") }
 if failed.is_empty() {
     print("{GREEN}全部通过：{passed}/{len(files)} 个测试，用时 {elapsed} 秒{RESET}")
 } else {

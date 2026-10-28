@@ -1,0 +1,9 @@
+# 递归穿过内建回调（map/reduce）多层后结果正确；异常从深层回调中传出
+fn tree(d) => d == 0 ? 1 : [d, d].map(fn(x) => tree(d - 1))
+fn count(t) => type(t) == "array" ? t.map(count).sum() : t
+print(count(tree(12)))   # expect: 4096
+fn deep(n) => n == 0 ? [] : [n].map(fn(x) => deep(n - 1))
+print(deep(3))   # expect: [[[[]]]]
+fn nest_throw(n) => n == 0 ? throw_it() : [1].map(fn(x) => nest_throw(n - 1))
+fn throw_it() { throw "深处的异常" }
+try { nest_throw(200) } catch e { print(e) }   # expect: 深处的异常

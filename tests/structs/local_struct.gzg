@@ -1,0 +1,13 @@
+# 结构体可以在函数内部声明（局部结构体）
+fn make() {
+    struct Local { v = 1
+        fn get() => self.v * 2 }
+    return Local(7)
+}
+let l = make()
+print(l.get(), type(l), l)   # expect: 14 Local Local(v: 7)
+fn pair(a, b) {
+    struct Pair { first, second }
+    return Pair(a, b)
+}
+print(pair(1, "x").second)   # expect: x

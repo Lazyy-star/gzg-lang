@@ -1,0 +1,8 @@
+# split(sep?) 与 lines()
+print("a,b,,c".split(","))   # expect: ["a", "b", "", "c"]
+print("a, b".split(", "))   # expect: ["a", "b"]
+print("  a  b\tc\n ".split())   # expect: ["a", "b", "c"]
+print("abc".split(","))   # expect: ["abc"]
+print("l1\nl2\r\nl3".lines())   # expect: ["l1", "l2", "l3"]
+print("a\n".lines(), "".lines())   # expect: ["a"] []
+print("一，二".split("，"))   # expect: ["一", "二"]

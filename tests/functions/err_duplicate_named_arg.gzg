@@ -1,0 +1,4 @@
+# 同一个参数既按位置又按名字传入
+fn add(a, b) => a + b
+add(1, a: 2)
+# expect-error: 参数 'a' 被重复传入
