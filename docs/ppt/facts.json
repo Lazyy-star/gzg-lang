@@ -96,8 +96,8 @@
   ],
   "app_lines": 925,
   "coverage": "94.4%（5043 行可执行代码）",
-  "git_log": "dc49d3d feat: GZG 解释器核心——词法分析、单遍编译器、字节码虚拟机、标记清除 GC\n762b882 docs: 语法规则文档；bench: 9 组 GZG/Python 对照性能用例；perf: 字符串拼接只拷贝一次、按…\n685ad41 feat: 内建函数库与平台层；tests: GZG 编写的测试运行器；docs: 开发指南与 Agent 技能文档\n27cbc17 2048：棋盘纯逻辑（移动合并、生成新块、胜负判断、撤销历史）\ncb72b3b 2048：棋盘单元测试（合并规则、四方向、无效移动、判负判胜、撤销）\n0e83662 feat: --stats 显示 GC 统计；perf: 叶子对象不入灰栈、最小 GC 阈值 8MB；docs: REA…\nff5383b docs: PPT 生成脚本（python-pptx，数据取自测试与性能结果）；示例对齐修正\ne38dd04 fix: 黑盒测试发现的 6 个问题\nc403dfc tests: 321 个黑盒测试（18 个分类）；fix: 深层回调与 to_str 递归的 C 栈溢出、深比较与打印的…\n805fbd7 tests: .in 输入文件不做换行符转换（保留 CRLF 用例）\n30d067f tests: 新增 cli 分类（--version/--help/-e/--dis/--tokens/--stats/…\na679ed3 docs: 补充测试中发现的模糊语义（fmt 舍入、区间显示与 in、移位位数、插值中的花括号、遮蔽规则等）\n2bf9c7c 2048：交互界面（ANSI 上色、命令解析、撤销/重来/帮助、最高分文件、moves.txt 重放）\n1dca9e8 tests: 运行器跳过 _ 开头的目录\n9421e18 2048：expectimax AI（线评估缓存、置换表、按空格数调整深度）\n0042b1c docs+fix: 根据 2048 Agent 的开发记录改进文档与报错\ne7c7227 2048：README、AI 跑分脚本、开发记录（6 局跑分、评估与报错统计）\n19b9bb5 bench: 最终性能测试结果（几何平均快 1.44 倍）与报告\ne34ec0c docs: 生成最终 PPT（18 页）；README 更新最终数字",
-  "commit_count": 19,
+  "git_log": "dc49d3d feat: GZG 解释器核心——词法分析、单遍编译器、字节码虚拟机、标记清除 GC\n762b882 docs: 语法规则文档；bench: 9 组 GZG/Python 对照性能用例；perf: 字符串拼接只拷贝一次、按…\n685ad41 feat: 内建函数库与平台层；tests: GZG 编写的测试运行器；docs: 开发指南与 Agent 技能文档\n27cbc17 2048：棋盘纯逻辑（移动合并、生成新块、胜负判断、撤销历史）\ncb72b3b 2048：棋盘单元测试（合并规则、四方向、无效移动、判负判胜、撤销）\n0e83662 feat: --stats 显示 GC 统计；perf: 叶子对象不入灰栈、最小 GC 阈值 8MB；docs: REA…\nff5383b docs: PPT 生成脚本（python-pptx，数据取自测试与性能结果）；示例对齐修正\ne38dd04 fix: 黑盒测试发现的 6 个问题\nc403dfc tests: 321 个黑盒测试（18 个分类）；fix: 深层回调与 to_str 递归的 C 栈溢出、深比较与打印的…\n805fbd7 tests: .in 输入文件不做换行符转换（保留 CRLF 用例）\n30d067f tests: 新增 cli 分类（--version/--help/-e/--dis/--tokens/--stats/…\na679ed3 docs: 补充测试中发现的模糊语义（fmt 舍入、区间显示与 in、移位位数、插值中的花括号、遮蔽规则等）\n2bf9c7c 2048：交互界面（ANSI 上色、命令解析、撤销/重来/帮助、最高分文件、moves.txt 重放）\n1dca9e8 tests: 运行器跳过 _ 开头的目录\n9421e18 2048：expectimax AI（线评估缓存、置换表、按空格数调整深度）\n0042b1c docs+fix: 根据 2048 Agent 的开发记录改进文档与报错\ne7c7227 2048：README、AI 跑分脚本、开发记录（6 局跑分、评估与报错统计）\n19b9bb5 bench: 最终性能测试结果（几何平均快 1.44 倍）与报告\ne34ec0c docs: 生成最终 PPT（18 页）；README 更新最终数字\n4309973 bench: 性能测量驱动改用 GZG 编写（run_bench.gzg），Python 仅用于画图；docs: 全项目…",
+  "commit_count": 20,
   "author_line": "郭志罡 · 2024210937 · 程序设计实践",
   "stats_sample": "$ gzg --stats bench/cases/strings.gzg\n[统计] 总耗时 0.574 秒；GC 15 次，共 0.207 秒（36.1%）；\n       累计分配 424.2 MB；堆峰值 60.4 MB\n\n$ gzg --stats bench/cases/fib.gzg\n[统计] 总耗时 0.182 秒；GC 0 次，共 0.000 秒（0.0%）；\n       累计分配 0.0 MB；堆峰值 0.0 MB\n\n# fib / loop / nbody / methods 全程零堆分配：\n# 数字是值类型，调用帧复用值栈",
   "strings_analysis": [
@@ -109,9 +109,9 @@
     "• 推荐写法 parts.push(x) + parts.join(\"\")：20 万片段只需 8ms"
   ],
   "test_summary": [
-    "普通模式 327/327 通过，约 25 秒",
-    "GC 压力模式（每次分配都回收）全部通过",
-    "gcov 行覆盖率 94.4%"
+    "327/327 通过",
+    "GC 压力模式通过",
+    "覆盖率 94.4%"
   ],
   "app_subtitle": "一个只读过 Skill 文档、没看过解释器源码的 Agent 独立开发：925 行 GZG，5 次阶段性提交",
   "app_screen": "$ gzg apps/game2048/main.gzg --auto --fast --seed 3\n+-------+-------+-------+-------+\n| 16384 | 4096  |  512  |   2   |\n+-------+-------+-------+-------+\n| 2048  | 1024  |  256  |   8   |\n+-------+-------+-------+-------+\n|  128  |  64   |  32   |   4   |\n+-------+-------+-------+-------+\n|   4   |   8   |  16   |   2   |\n+-------+-------+-------+-------+\n最终分数: 290724\n最大块: 16384\n步数: 11239\n结果: 胜利（达成 2048）",
