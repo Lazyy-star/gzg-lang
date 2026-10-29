@@ -9,11 +9,11 @@ def slides_b(F, B):
          "blocks": [
             {"type": "pipeline", "area": (0, 0, 12, 2.3), "stages": [
                 ["源码", ".gzg · UTF-8"], ["词法分析", "双语关键字 · 插值 · 自动分号"],
-                ["编译器", "Pratt 解析 · 作用域 · 闭包"], ["字节码", "约 75 条指令 · 常量池 · 行号表"],
+                ["编译器", "Pratt 解析 · 作用域 · 闭包"], ["字节码", "71 条指令 · 常量池 · 行号表"],
                 ["虚拟机", "computed goto · 调用帧 · 异常"]]},
             {"type": "cards", "area": (0, 2.6, 7.4, 3.4), "size": 12, "items": [
                 {"title": "memory.c", "body": ["三色标记-清除", "字符串池为弱引用"]},
-                {"title": "builtins.c", "body": ["约 60 个全局函数", "约 80 个内建方法"]},
+                {"title": "builtins.c", "body": ["50 个全局函数 + 7 个中文别名", "71 个内建方法"]},
                 {"title": "platform.c", "body": ["中文路径与参数", "UTF-8 控制台"]}]},
             {"type": "bars", "area": (7.7, 2.6, 4.3, 3.4), "title": "各模块代码行数", "unit": "行",
              "items": [[m, int(v)] for m, v in zip(mods, lc[:-1])]},
