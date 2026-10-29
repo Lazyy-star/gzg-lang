@@ -43,7 +43,7 @@ build/gzg apps/game2048/main.gzg     # 用 GZG 写的 2048 游戏（含 AI）
 | 性能测试与报告 | [bench/](bench/)（用例与计时驱动 [run_bench.gzg](bench/run_bench.gzg) 均为 GZG），[docs/性能测试报告.md](docs/性能测试报告.md) |
 | Agent 开发的应用 | [apps/game2048/](apps/game2048/)，应用开发记录 [DEVLOG.md](apps/game2048/DEVLOG.md) |
 | 全项目开发记录（Agent 分工、时间线、问题与修复） | [docs/开发记录.md](docs/开发记录.md) |
-| 系统介绍 PPT | [docs/GZG语言介绍.pptx](docs/GZG语言介绍.pptx) |
+| 系统介绍 PPT | [docs/GZG语言介绍.pptx](docs/GZG语言介绍.pptx)（带切换与入场动画）；同内容的交互网页 [docs/GZG语言介绍.html](docs/GZG语言介绍.html)（单文件，浏览器直接打开）；生成脚本在 [docs/ppt/](docs/ppt/) 与 [docs/web/](docs/web/) |
 
 ## Make 目标
 
